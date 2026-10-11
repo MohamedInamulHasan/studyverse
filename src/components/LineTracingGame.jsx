@@ -164,10 +164,8 @@ export const LineTracingGame = () => {
 
   const getCoordinates = (e, svgElem) => {
     const rect = svgElem.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const x = ((clientX - rect.left) / rect.width) * 320;
-    const y = ((clientY - rect.top) / rect.height) * 95;
+    const x = ((e.clientX - rect.left) / rect.width) * 320;
+    const y = ((e.clientY - rect.top) / rect.height) * 95;
     return { x, y };
   };
 
@@ -195,6 +193,9 @@ export const LineTracingGame = () => {
 
   const handlePointerDown = (row, e) => {
     e.preventDefault();
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
     isDrawing.current = true;
     setActiveRow(row.id);
     const svg = canvasRefs.current[row.id];
@@ -238,44 +239,54 @@ export const LineTracingGame = () => {
     }
   };
 
-  const handlePointerUp = () => { isDrawing.current = false; };
+  const handlePointerUp = (e) => {
+    if (e && e.currentTarget && e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+    }
+    isDrawing.current = false;
+    setActiveRow(null);
+  };
 
   const handleRetry = () => {
     setStrokesByRow({});
     setCompletedRows({});
     setActiveTool('pencil');
+    const firstEl = document.getElementById('line-trace-row-0');
+    if (firstEl) {
+      firstEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
-    <div className="relative select-none pb-12 w-full max-w-md mx-auto px-2">
-
-
-
+    <div className="relative select-none pb-12 w-full max-w-md mx-auto px-3 sm:px-5">
       {/* 7 Tracing Rows */}
       <div className="space-y-4 sm:space-y-6 pt-2">
-        {TRACE_ROWS.map((row) => {
+        {TRACE_ROWS.map((row, rIdx) => {
           const isCompleted = completedRows[row.id];
           const strokes = strokesByRow[row.id] || [];
 
           return (
             <div
+              id={`line-trace-row-${rIdx}`}
               key={row.id}
-              className="relative flex items-center justify-between w-full py-1 select-none"
+              className="relative flex items-center justify-between w-full py-1.5 select-none"
             >
               {/* Interactive SVG Tracing Surface */}
-              <div className="flex-1 relative touch-none pr-3">
+              <div className="flex-1 relative pr-3">
                 <svg
                   ref={el => (canvasRefs.current[row.id] = el)}
                   viewBox="0 0 320 95"
-                  className="w-full h-24 sm:h-28 touch-none"
-                  style={{ cursor: activeTool === 'eraser' ? ERASER_CURSOR : PENCIL_CURSOR }}
-                  onMouseDown={(e) => handlePointerDown(row, e)}
-                  onMouseMove={(e) => handlePointerMove(row, e)}
-                  onMouseUp={handlePointerUp}
-                  onMouseLeave={handlePointerUp}
-                  onTouchStart={(e) => handlePointerDown(row, e)}
-                  onTouchMove={(e) => handlePointerMove(row, e)}
-                  onTouchEnd={handlePointerUp}
+                  className="w-full h-24 sm:h-28 drop-shadow-2xs select-none"
+                  style={{
+                    cursor: activeTool === 'eraser' ? ERASER_CURSOR : PENCIL_CURSOR,
+                    touchAction: 'none'
+                  }}
+                  onPointerDown={(e) => handlePointerDown(row, e)}
+                  onPointerMove={(e) => handlePointerMove(row, e)}
+                  onPointerUp={handlePointerUp}
+                  onPointerCancel={handlePointerUp}
                 >
                   {/* Thin dotted grey guide lines */}
                   {row.pathD && (
@@ -417,7 +428,7 @@ export const LineTracingGame = () => {
         <button
           type="button"
           onClick={handleRetry}
-          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700 border-b-[3.5px] border-b-emerald-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#16a34a] hover:bg-green-700 text-white border border-green-700 border-b-[3.5px] border-b-green-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
         >
           <RotateCcw className="w-4 h-4" />
           <span>மீண்டும் செய்</span>

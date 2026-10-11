@@ -4896,7 +4896,7 @@ export default function App() {
                   const topicContent = getClass1TamilTopicContent(unitNum, selectedExerciseOption.id);
 
                   return (
-                    <main className="flex-1 overflow-y-auto px-4 sm:px-5 pt-3 pb-28 space-y-4 animate-fade-in select-none">
+                    <main className="flex-1 overflow-y-auto px-4 sm:px-5 pt-3 pb-28 space-y-4 animate-fade-in select-none" style={{ touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' }}>
                       {/* Topic Heading: Underlined text like English page for visual topics, standard card for others */}
                       {!['kattukulle', 'aalamarathula', 'verupattathai', 'muthal-padam', 'poruthamaanathai', 'peyarai', 'vaanga-ennodu', 'vidubattadhai', 'padathirkum-ezhuthirkum', 'ezhuthai-inaippom', 'nirappuven', 'inaippen-ezhuthuven', 'ezhuthukkalai-arivom', 'ezhuthi-pazhaguven'].includes(topicContent.id) ? (
                         <div className="rounded-[22px] bg-pink-50 border border-pink-300 border-b-[4px] border-b-pink-400 px-4 py-3.5 flex items-center justify-between shadow-sm select-none">

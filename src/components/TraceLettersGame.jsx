@@ -91,39 +91,41 @@ const TraceLetterCard = ({
   return (
     <div
       id={`trace-card-${idx}`}
-      className="rounded-[32px] sm:rounded-[36px] bg-white border border-slate-200 border-b-[4px] border-b-slate-300 shadow-sm relative aspect-square w-full flex flex-col items-center justify-center overflow-hidden transition-all"
+      className="rounded-[32px] sm:rounded-[36px] bg-white border border-slate-200 border-b-[4px] border-b-slate-300 shadow-sm relative aspect-square w-full flex flex-col items-center justify-between p-3.5 sm:p-4 overflow-hidden transition-all"
+      style={{ touchAction: 'pan-y' }}
     >
-      {/* Top-Left: Plain black number "1." */}
-      <div className="absolute top-4 left-5 text-slate-900 font-black text-lg sm:text-xl z-20 select-none">
-        {idx + 1}.
+      {/* Top Header Bar: Number & Chunky Green Tick Mark (Free Touch Scroll Zone) */}
+      <div className="w-full flex items-center justify-between z-20 select-none px-1" style={{ touchAction: 'pan-y' }}>
+        <div className="text-slate-900 font-black text-lg sm:text-xl">
+          {idx + 1}.
+        </div>
+
+        {isCompleted && (
+          <div className="anim-pop-in pointer-events-none">
+            <svg viewBox="0 0 100 100" className="w-8 h-8 sm:w-10 sm:h-10 drop-shadow-md">
+              <path
+                d="M 22 52 L 42 74 L 80 24"
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M 22 52 L 42 74 L 80 24"
+                fill="none"
+                stroke="#16a34a"
+                strokeWidth="17"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        )}
       </div>
 
-      {/* Top-Right: Chunky green tick matching Topic 5 tick */}
-      {isCompleted && (
-        <div className="absolute top-3.5 right-4 z-20 anim-pop-in pointer-events-none">
-          <svg viewBox="0 0 100 100" className="w-8 h-8 sm:w-10 sm:h-10 drop-shadow-md">
-            <path
-              d="M 22 52 L 42 74 L 80 24"
-              fill="none"
-              stroke="#ffffff"
-              strokeWidth="24"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M 22 52 L 42 74 L 80 24"
-              fill="none"
-              stroke="#16a34a"
-              strokeWidth="17"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-      )}
-
       {/* 1:1 Tracing Surface */}
-      <div className="relative w-full h-full flex items-center justify-center p-2 select-none touch-none">
+      <div className="relative w-full flex-1 max-h-[75%] aspect-square flex items-center justify-center select-none" style={{ touchAction: 'none' }}>
         {/* Double-dot Pattern Fill (Classic Dotted Letter Shape) */}
         <svg
           viewBox="0 0 400 400"
@@ -187,15 +189,17 @@ const TraceLetterCard = ({
         />
       </div>
 
-      {/* Bottom-Right: Small Circular Retry Icon (Icon Only, No Text) */}
-      <button
-        type="button"
-        onClick={() => onResetRow(item.id)}
-        className="absolute bottom-3.5 right-4 z-20 p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800 active:scale-90 transition-all cursor-pointer border border-slate-200 bg-slate-50/80 shadow-xs"
-        title="மீண்டும் செய்"
-      >
-        <RotateCcw className="w-4 h-4 text-slate-600 stroke-[2.2]" />
-      </button>
+      {/* Bottom Bar: Small Circular Retry Icon & Touch Scroll Zone */}
+      <div className="w-full flex items-center justify-end z-20 px-1" style={{ touchAction: 'pan-y' }}>
+        <button
+          type="button"
+          onClick={() => onResetRow(item.id)}
+          className="p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800 active:scale-90 transition-all cursor-pointer border border-slate-200 bg-slate-50/80 shadow-xs"
+          title="மீண்டும் செய்"
+        >
+          <RotateCcw className="w-4 h-4 text-slate-600 stroke-[2.2]" />
+        </button>
+      </div>
     </div>
   );
 };
@@ -383,7 +387,7 @@ export const TraceLettersGame = () => {
         <button
           type="button"
           onClick={handleResetAll}
-          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-lime-600 hover:bg-lime-700 text-white border border-lime-700 border-b-[3.5px] border-b-lime-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#16a34a] hover:bg-green-700 text-white border border-green-700 border-b-[3.5px] border-b-green-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
         >
           <RotateCcw className="w-4 h-4" />
           <span>மீண்டும் செய்</span>

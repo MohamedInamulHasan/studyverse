@@ -121,6 +121,9 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
 
   const startDrawing = (e) => {
     e.preventDefault();
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
     isDrawingRef.current     = true;
     currentStrokeRef.current = {
       color: selectedColor,
@@ -136,7 +139,12 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
     redraw();
   };
 
-  const stopDrawing = () => {
+  const stopDrawing = (e) => {
+    if (e && e.currentTarget && e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+    }
     if (isDrawingRef.current && currentStrokeRef.current) {
       strokesRef.current.push(currentStrokeRef.current);
       currentStrokeRef.current = null;
@@ -163,22 +171,18 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
   return (
     <div
       className="rounded-[28px] bg-white border-2 border-[#84cc16] p-2 sm:p-3 flex items-center justify-center shadow-2xs relative overflow-visible transition-all w-full max-w-xl aspect-[4/3]"
-      onMouseUp={stopDrawing}
-      onTouchEnd={stopDrawing}
     >
       {/* Full 4:3 Canvas for Lineart Image */}
       <canvas
         ref={canvasRef}
         width={800}
         height={600}
-        className="w-full h-full aspect-[4/3] rounded-[22px] touch-none bg-white block"
-        style={customCursorStyle}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onTouchStart={(e) => startDrawing(e.touches[0])}
-        onTouchMove={(e) => draw(e.touches[0])}
-        onTouchEnd={stopDrawing}
+        className="w-full h-full aspect-[4/3] rounded-[22px] bg-white block select-none"
+        style={{ ...customCursorStyle, touchAction: 'none' }}
+        onPointerDown={startDrawing}
+        onPointerMove={draw}
+        onPointerUp={stopDrawing}
+        onPointerCancel={stopDrawing}
       />
 
       {/* Right Border Embedded Option Circles (அ & ஆ) */}
@@ -232,6 +236,10 @@ export const ColorMatchingLetterGame = () => {
     setLetterColors({});
     setSelectedColor(PALETTE_COLORS[6].hex);
     setResetTrigger(prev => prev + 1);
+    const firstEl = document.getElementById('color-match-card-0');
+    if (firstEl) {
+      firstEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const cards = [
@@ -374,14 +382,15 @@ export const ColorMatchingLetterGame = () => {
 
       {/* ── List of 4:3 Canvas Cards ── */}
       <div className="space-y-8">
-        {cards.map((card) => (
-          <CanvasCard
-            key={`${card.id}_${resetTrigger}`}
-            card={card}
-            selectedColor={selectedColor}
-            letterColors={letterColors}
-            onColorLetter={handleColorLetter}
-          />
+        {cards.map((card, cIdx) => (
+          <div id={`color-match-card-${cIdx}`} key={`${card.id}_${resetTrigger}`}>
+            <CanvasCard
+              card={card}
+              selectedColor={selectedColor}
+              letterColors={letterColors}
+              onColorLetter={handleColorLetter}
+            />
+          </div>
         ))}
       </div>
 
@@ -390,7 +399,7 @@ export const ColorMatchingLetterGame = () => {
         <button
           type="button"
           onClick={handleReset}
-          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-lime-600 hover:bg-lime-700 text-white border border-lime-700 border-b-[3.5px] border-b-lime-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#16a34a] hover:bg-green-700 text-white border border-green-700 border-b-[3.5px] border-b-green-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
         >
           <RotateCcw className="w-4 h-4" />
           <span>மீண்டும் செய்</span>

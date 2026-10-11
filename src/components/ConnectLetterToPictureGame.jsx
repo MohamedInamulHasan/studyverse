@@ -145,7 +145,7 @@ function RadialWheel({ panel, connections, onConnect }) {
       ref={svgRef}
       viewBox={`0 0 ${VB_W} ${VB_H}`}
       width="100%"
-      style={{ maxWidth: 360, display: 'block', touchAction: 'none', userSelect: 'none' }}
+      style={{ maxWidth: 360, display: 'block', touchAction: 'pan-y', userSelect: 'none' }}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
@@ -230,7 +230,7 @@ function RadialWheel({ panel, connections, onConnect }) {
         fill="white"
         stroke={panel.letterColor}
         strokeWidth="3"
-        style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.15))', cursor: 'grab' }}
+        style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.15))', cursor: 'grab', touchAction: 'none' }}
         onPointerDown={onCenterDown}
       />
       <text
@@ -268,32 +268,38 @@ export const ConnectLetterToPictureGame = () => {
     });
   }, []);
 
-  const handleReset = () => setConnections({
-    a: new Set(),
-    aa: new Set(),
-    i: new Set(),
-    ee: new Set()
-  });
+  const handleReset = () => {
+    setConnections({
+      a: new Set(),
+      aa: new Set(),
+      i: new Set(),
+      ee: new Set()
+    });
+    const firstEl = document.getElementById('connect-panel-0');
+    if (firstEl) {
+      firstEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full pb-6 select-none">
+    <div className="flex flex-col items-center gap-4 w-full pb-6 select-none px-3 sm:px-4">
       {PANELS.map((panel, idx) => (
-        <React.Fragment key={panel.id}>
-          {idx > 0 && <div className="w-3/4 border-t border-dashed border-gray-200 my-2" />}
+        <div id={`connect-panel-${idx}`} key={panel.id} className="w-full flex flex-col items-center">
+          {idx > 0 && <div className="w-3/4 border-t border-dashed border-gray-200 my-3" />}
           <RadialWheel
             panel={panel}
             connections={connections[panel.id] || new Set()}
             onConnect={(item) => handleConnect(panel.id, item)}
           />
-        </React.Fragment>
+        </div>
       ))}
 
-      {/* Bottom Reset / Retry Button (styled like other Tamil Class 1 game pages) */}
+      {/* Bottom Reset / Retry Button */}
       <div className="flex justify-center pt-4 pb-4">
         <button
           type="button"
           onClick={handleReset}
-          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-lime-600 hover:bg-lime-700 text-white border border-lime-700 border-b-[3.5px] border-b-lime-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#16a34a] hover:bg-green-700 text-white border border-green-700 border-b-[3.5px] border-b-green-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
         >
           <RotateCcw className="w-4 h-4" />
           <span>மீண்டும் செய்</span>
