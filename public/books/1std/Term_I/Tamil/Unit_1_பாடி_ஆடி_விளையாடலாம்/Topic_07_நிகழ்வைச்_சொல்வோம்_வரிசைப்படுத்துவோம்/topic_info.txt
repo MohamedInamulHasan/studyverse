@@ -1,0 +1,6 @@
+Topic Title: நிகழ்வைச் சொல்வோம் வரிசைப்படுத்துவோம்
+Description: படங்களின் வரிசையை அறிந்து கதை கூறுவோம்
+Unit: Unit_1_பாடி_ஆடி_விளையாடலாம்
+Subject: Tamil
+Term: Term_I
+Class: 1std

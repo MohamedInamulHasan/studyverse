@@ -1,0 +1,52 @@
+{
+  "profile": {
+    "name": "Alex Student",
+    "selectedGrade": "grade-12",
+    "selectedSubject": "physics-12",
+    "selectedChapter": "chap-phy-101",
+    "streakDays": 5,
+    "completedTopics": [
+      "Inertia and Newton's Three Laws of Motion",
+      "Conservation of Linear Momentum",
+      "Valence Shell Electron Pair Repulsion (VSEPR) Theory"
+    ]
+  },
+  "customNotes": [
+    {
+      "id": "cn-1",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-101",
+      "title": "My Personal Exam Summary: Momentum & Collisions",
+      "content": "Remember: in elastic collisions, BOTH momentum and kinetic energy are conserved. In inelastic collisions, only momentum is conserved (kinetic energy converts into heat/sound).",
+      "createdAt": "2026-09-30T10:00:00.000Z",
+      "updatedAt": "2026-10-01T15:30:00.000Z"
+    }
+  ],
+  "bookmarks": [
+    {
+      "id": "bm-1",
+      "type": "chapter",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-101",
+      "title": "Newtonian Dynamics & Momentum",
+      "timestamp": "2026-10-01T12:00:00.000Z"
+    }
+  ],
+  "quizHistory": [
+    {
+      "quizId": "quiz-phy-101",
+      "title": "Mastery Quiz: Newtonian Dynamics & Momentum",
+      "score": 4,
+      "total": 4,
+      "percentage": 100,
+      "completedAt": "2026-10-02T09:00:10.822Z"
+    },
+    {
+      "quizId": "quiz-phy-101",
+      "score": 3,
+      "total": 4,
+      "percentage": 75,
+      "completedAt": "2026-10-01T16:20:00.000Z"
+    }
+  ]
+}

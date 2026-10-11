@@ -1,0 +1,8 @@
+# Seasons and Weather
+
+Weather Words: Sunny, Rainy, Cloudy
+
+- **Unit**: Unit_1_Rain_Rain_Go_Away
+- **Subject**: English
+- **Term**: Term_III
+- **Class**: 1std

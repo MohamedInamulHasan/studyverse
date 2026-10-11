@@ -1,0 +1,6 @@
+Topic: Look and Say
+Description: Family Members Vocabulary
+Unit: Unit 3 Families
+Subject: English
+Term: Term_I
+Class: 1std

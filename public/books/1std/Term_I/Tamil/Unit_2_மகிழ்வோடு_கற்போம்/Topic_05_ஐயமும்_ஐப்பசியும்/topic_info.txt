@@ -1,0 +1,6 @@
+Topic Title: ஐயமும் ஐப்பசியும்
+Description: ஐ எழுத்து அறிவோம்
+Unit: Unit_2_மகிழ்வோடு_கற்போம்
+Subject: Tamil
+Term: Term_I
+Class: 1std

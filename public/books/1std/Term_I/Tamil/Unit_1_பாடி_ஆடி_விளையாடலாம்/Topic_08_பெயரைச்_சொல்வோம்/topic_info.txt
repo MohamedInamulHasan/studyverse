@@ -1,0 +1,6 @@
+Topic Title: பெயரைச் சொல்வோம்
+Description: படங்களைப் பார்த்து பெயர் சொல்வோம்
+Unit: Unit_1_பாடி_ஆடி_விளையாடலாம்
+Subject: Tamil
+Term: Term_I
+Class: 1std

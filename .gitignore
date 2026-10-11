@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build
+dist/
+dist-ssr/
+*.local
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Large APKs & Mobile builds
+*.apk
+android/
+
+# Large PDF Textbooks (Hosted on Google Drive)
+public/pdfs/*.pdf
+
+# Images stored on Cloudinary
+public/images/tamil_class1/
+uploaded_files.json
+upload_to_cloudinary.mjs
+
+# Editor & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.kilo/
+scratch/
+Project/

@@ -1,0 +1,278 @@
+{
+  "oneWordQuestions": [
+    {
+      "id": "ow-1",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-101",
+      "topic": "Newtonian Dynamics",
+      "difficulty": "Easy",
+      "question": "What physical quantity is defined as the product of mass and velocity?",
+      "answer": "Momentum",
+      "acceptableSynonyms": ["Linear Momentum", "momentum"],
+      "explanation": "Linear momentum (p) is the vector quantity defined as p = m * v."
+    },
+    {
+      "id": "ow-2",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-101",
+      "topic": "Newton's Laws",
+      "difficulty": "Easy",
+      "question": "Which property of a body opposes any change in its state of rest or uniform motion?",
+      "answer": "Inertia",
+      "acceptableSynonyms": ["inertia", "Inertial mass"],
+      "explanation": "Inertia is the inherent tendency of an object to resist changes in its velocity."
+    },
+    {
+      "id": "ow-3",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-101",
+      "topic": "Impulse",
+      "difficulty": "Medium",
+      "question": "What is the SI unit of impulse?",
+      "answer": "Newton-second",
+      "acceptableSynonyms": ["N s", "Ns", "kg m/s", "N.s", "Newton-seconds"],
+      "explanation": "Impulse is Force x time (N*s), which equals change in momentum (kg*m/s)."
+    },
+    {
+      "id": "ow-4",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-102",
+      "topic": "Gravitation",
+      "difficulty": "Medium",
+      "question": "What is the approximate escape velocity from the surface of Earth in km/s?",
+      "answer": "11.2",
+      "acceptableSynonyms": ["11.2 km/s", "11.2km/s", "approx 11.2"],
+      "explanation": "Escape velocity v_e = sqrt(2gR) gives approximately 11.2 km/s."
+    },
+    {
+      "id": "ow-5",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-102",
+      "topic": "Gravitation",
+      "difficulty": "Easy",
+      "question": "What is the value of gravitational acceleration 'g' at the exact center of Earth?",
+      "answer": "Zero",
+      "acceptableSynonyms": ["0", "zero", "0 m/s^2"],
+      "explanation": "At Earth's geometric center, mass is symmetrically distributed in all directions, yielding net zero gravitational field."
+    },
+    {
+      "id": "ow-6",
+      "subjectId": "math-12",
+      "chapterId": "chap-math-101",
+      "topic": "Calculus",
+      "difficulty": "Easy",
+      "question": "What is the derivative of e^x with respect to x?",
+      "answer": "e^x",
+      "acceptableSynonyms": ["e^x", "exp(x)"],
+      "explanation": "The exponential function f(x) = e^x has the unique property that f'(x) = e^x."
+    },
+    {
+      "id": "ow-7",
+      "subjectId": "math-12",
+      "chapterId": "chap-math-101",
+      "topic": "Calculus",
+      "difficulty": "Medium",
+      "question": "If f''(c) > 0 at a critical point where f'(c) = 0, what type of extremum occurs at x = c?",
+      "answer": "Minimum",
+      "acceptableSynonyms": ["local minimum", "relative minimum", "minima"],
+      "explanation": "By the Second Derivative Test, a positive concavity (f'' > 0) indicates a local minimum."
+    },
+    {
+      "id": "ow-8",
+      "subjectId": "cs-12",
+      "chapterId": "chap-cs-101",
+      "topic": "Data Structures",
+      "difficulty": "Easy",
+      "question": "Which principle does a Stack data structure adhere to?",
+      "answer": "LIFO",
+      "acceptableSynonyms": ["Last In First Out", "LIFO principle", "lifo"],
+      "explanation": "Stack is a Last-In, First-Out structure (LIFO)."
+    },
+    {
+      "id": "ow-9",
+      "subjectId": "cs-12",
+      "chapterId": "chap-cs-101",
+      "topic": "Complexity",
+      "difficulty": "Medium",
+      "question": "What is the average time complexity of Binary Search on a sorted array of N elements?",
+      "answer": "O(log N)",
+      "acceptableSynonyms": ["O(log n)", "logarithmic", "O(logn)"],
+      "explanation": "Binary search divides the search space in half at each step, yielding O(log N)."
+    },
+    {
+      "id": "ow-10",
+      "subjectId": "chem-12",
+      "chapterId": "chap-chem-101",
+      "topic": "Chemical Bonding",
+      "difficulty": "Easy",
+      "question": "What is the molecular geometry shape of a water molecule (H2O)?",
+      "answer": "Bent",
+      "acceptableSynonyms": ["V-shaped", "Angular", "bent"],
+      "explanation": "Due to two lone pairs on oxygen, H2O adopts a bent or angular geometry with an angle of 104.5°."
+    },
+    {
+      "id": "ow-11",
+      "subjectId": "bio-10",
+      "chapterId": "chap-bio-101",
+      "topic": "Cell Biology",
+      "difficulty": "Easy",
+      "question": "Which chemical molecule is recognized as the universal energy currency of living cells?",
+      "answer": "ATP",
+      "acceptableSynonyms": ["Adenosine Triphosphate", "atp"],
+      "explanation": "ATP (Adenosine Triphosphate) stores and releases energy for metabolic processes."
+    }
+  ],
+  "detailedQuestions": [
+    {
+      "id": "dq-1",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-101",
+      "topic": "Newtonian Mechanics",
+      "difficulty": "Medium",
+      "question": "State the Law of Conservation of Linear Momentum and derive it using Newton's Second and Third Laws of Motion.",
+      "modelAnswer": "### Statement:\nThe total linear momentum of an isolated system (upon which no external net force acts) remains constant in magnitude and direction over time.\n\n### Mathematical Formulation:\nIf $\\sum \\vec{F}_{ext} = 0$, then $\\vec{p}_{total} = \\text{constant}$.\n\n### Derivation:\n1. Consider two interacting bodies $A$ and $B$ with masses $m_A$ and $m_B$ isolated from external influences.\n2. When they collide for a time interval $\\Delta t$, let $\\vec{F}_{AB}$ be the force exerted by $B$ on $A$, and $\\vec{F}_{BA}$ be the force exerted by $A$ on $B$.\n3. By **Newton's Third Law**:\n   $$\\vec{F}_{AB} = -\\vec{F}_{BA}$$\n4. By **Newton's Second Law** (Force = Rate of change of momentum):\n   $$\\vec{F}_{AB} = \\frac{\\Delta \\vec{p}_A}{\\Delta t} \\quad \\text{and} \\quad \\vec{F}_{BA} = \\frac{\\Delta \\vec{p}_B}{\\Delta t}$$\n5. Substituting these into the third law:\n   $$\\frac{\\Delta \\vec{p}_A}{\\Delta t} = -\\frac{\\Delta \\vec{p}_B}{\\Delta t}$$\n   $$\\Delta \\vec{p}_A + \\Delta \\vec{p}_B = 0 \\implies \\Delta(\\vec{p}_A + \\vec{p}_B) = 0$$\n6. Therefore, the total momentum before collision equals total momentum after collision:\n   $$m_A \\vec{u}_A + m_B \\vec{u}_B = m_A \\vec{v}_A + m_B \\vec{v}_B$$\nThis proves conservation of linear momentum.",
+      "keyMarkingPoints": [
+        "Accurate statement defining an isolated system (1 mark)",
+        "Application of Newton's 3rd Law: F_AB = -F_BA (1 mark)",
+        "Application of Newton's 2nd Law in momentum form (1 mark)",
+        "Step-by-step substitution showing net delta p = 0 (1 mark)",
+        "Final conclusion with equation m1u1 + m2u2 = m1v1 + m2v2 (1 mark)"
+      ],
+      "totalMarks": 5
+    },
+    {
+      "id": "dq-2",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-102",
+      "topic": "Orbital Mechanics",
+      "difficulty": "Medium",
+      "question": "What is escape velocity? Derive the mathematical expression for the escape velocity from the surface of a spherical planet of mass M and radius R.",
+      "modelAnswer": "### Definition:\nEscape velocity is defined as the minimum initial speed with which a body must be projected vertically upwards from the surface of a planet so that it completely overcomes the gravitational pull of the planet and never returns.\n\n### Derivation:\n1. Consider a projectile of mass $m$ on the surface of a planet of mass $M$ and radius $R$.\n2. The total mechanical energy at the planetary surface is:\n   $$E_{surface} = K + U = \\frac{1}{2}m v_e^2 - \\frac{GMm}{R}$$\n3. At infinity ($r \\to \\infty$), the gravitational potential energy is zero ($U_\\infty = 0$). For minimum escape velocity, the projectile's kinetic energy at infinity is also just reduced to zero ($K_\\infty = 0$).\n   $$E_\\infty = 0$$\n4. By the **Law of Conservation of Energy**:\n   $$E_{surface} = E_\\infty$$\n   $$\\frac{1}{2}m v_e^2 - \\frac{GMm}{R} = 0$$\n   $$\\frac{1}{2}m v_e^2 = \\frac{GMm}{R}$$\n5. Cancelling the mass of the projectile $m$:\n   $$v_e^2 = \\frac{2GM}{R} \\implies v_e = \\sqrt{\\frac{2GM}{R}}$$\n6. Since acceleration due to gravity is $g = \\frac{GM}{R^2} \\implies GM = gR^2$, we can rewrite:\n   $$v_e = \\sqrt{2gR}$$\nFor Earth where $g = 9.8\\text{ m/s}^2$ and $R \\approx 6.4 \\times 10^6\\text{ m}$, $v_e \\approx 11.2\\text{ km/s}$.",
+      "keyMarkingPoints": [
+        "Clear definition of escape velocity (1 mark)",
+        "Expression for total energy at surface: 1/2 m v_e^2 - GMm/R (1 mark)",
+        "Energy condition at infinity E_inf = 0 (1 mark)",
+        "Equating energies and algebraic simplification (1 mark)",
+        "Conversion to v_e = sqrt(2gR) and Earth value (1 mark)"
+      ],
+      "totalMarks": 5
+    },
+    {
+      "id": "dq-3",
+      "subjectId": "cs-12",
+      "chapterId": "chap-cs-101",
+      "topic": "Data Structures",
+      "difficulty": "Hard",
+      "question": "Compare and contrast Linear Search and Binary Search in terms of prerequisites, operational algorithm, best/worst-case time complexities, and optimal use cases.",
+      "modelAnswer": "### Comparison Table:\n\n| Parameter | Linear Search | Binary Search |\n|---|---|---|\n| **Data Ordering** | Works on both sorted & unsorted collections | Requires pre-sorted array |\n| **Mechanism** | Sequentially scans elements one by one from start to end | Divide-and-conquer: checks middle element, halves search range |\n| **Best-Case Time** | $O(1)$ (target is at index 0) | $O(1)$ (target is middle element) |\n| **Worst-Case Time** | $O(N)$ (target is at end or not found) | $O(\\log_2 N)$ |\n| **Space Complexity**| $O(1)$ auxiliary | $O(1)$ iterative, $O(\\log N)$ recursive stack |\n| **Data Structure Suitability** | Works smoothly on linked lists and arrays | Ideally suited for direct index-accessible arrays |\n\n### Algorithmic Breakdown:\n- **Linear Search**: Checks `arr[i] == target`. Simple to implement, optimal for small datasets ($N < 50$) or when data is frequently modified without maintaining sorted order.\n- **Binary Search**: Compares `target` with `arr[mid]`. If `target < arr[mid]`, search left half; if greater, search right half. Dramatically faster for large datasets (e.g., $10^6$ elements takes max 20 comparisons vs 1,000,000 in linear search).",
+      "keyMarkingPoints": [
+        "Clear table comparing prerequisite sorted order (1 mark)",
+        "Explanation of Divide & Conquer mechanism (1 mark)",
+        "Accurate time complexity analysis: O(N) vs O(log N) (1 mark)",
+        "Practical considerations regarding linked lists vs arrays (1 mark)"
+      ],
+      "totalMarks": 4
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "quiz-phy-101",
+      "subjectId": "physics-12",
+      "chapterId": "chap-phy-101",
+      "title": "Mastery Quiz: Newtonian Dynamics & Momentum",
+      "timeLimitSeconds": 300,
+      "questions": [
+        {
+          "id": "q1",
+          "type": "mcq",
+          "prompt": "If the net external force acting on a system of bodies is zero, which of the following quantities must be conserved?",
+          "options": [
+            "Total Mechanical Energy",
+            "Total Linear Momentum",
+            "Total Kinetic Energy",
+            "Angular Velocity"
+          ],
+          "correctIndex": 1,
+          "explanation": "By Newton's Second Law (F_ext = dp/dt), if F_ext = 0, dp/dt = 0, so total linear momentum is strictly conserved."
+        },
+        {
+          "id": "q2",
+          "type": "mcq",
+          "prompt": "A body of mass 2 kg moves with a velocity of 15 m/s. What is the magnitude of impulse required to stop it?",
+          "options": [
+            "7.5 N·s",
+            "15 N·s",
+            "30 N·s",
+            "60 N·s"
+          ],
+          "correctIndex": 2,
+          "explanation": "Impulse = Change in Momentum = m * (v_final - v_initial) = 2 kg * (0 - 15 m/s) = -30 N·s (magnitude is 30 N·s)."
+        },
+        {
+          "id": "q3",
+          "type": "one_word",
+          "prompt": "Name the fictitious force observed in a rotating non-inertial frame of reference directed away from the axis of rotation.",
+          "correctAnswer": "Centrifugal Force",
+          "acceptableAnswers": ["centrifugal force", "centrifugal"],
+          "explanation": "Centrifugal force is an apparent inertial force experienced by an observer in a rotating frame."
+        },
+        {
+          "id": "q4",
+          "type": "mcq",
+          "prompt": "Why do action and reaction forces not cancel each other out?",
+          "options": [
+            "Because they act in the same direction",
+            "Because they have different magnitudes",
+            "Because they act on two different bodies",
+            "Because they act with a time delay"
+          ],
+          "correctIndex": 2,
+          "explanation": "Action and reaction forces occur simultaneously but act on distinct interacting bodies, so they cannot cancel."
+        }
+      ]
+    },
+    {
+      "id": "quiz-cs-101",
+      "subjectId": "cs-12",
+      "chapterId": "chap-cs-101",
+      "title": "Mastery Quiz: Data Structures & Asymptotic Notation",
+      "timeLimitSeconds": 240,
+      "questions": [
+        {
+          "id": "q1",
+          "type": "mcq",
+          "prompt": "Which data structure is fundamentally used by the compiler to manage function calls and recursion?",
+          "options": [
+            "FIFO Queue",
+            "LIFO Stack",
+            "Binary Search Tree",
+            "Priority Heap"
+          ],
+          "correctIndex": 1,
+          "explanation": "The call stack is a LIFO stack where stack frames are pushed on call and popped upon return."
+        },
+        {
+          "id": "q2",
+          "type": "mcq",
+          "prompt": "What is the worst-case time complexity of searching an element in an unsorted array of size N?",
+          "options": [
+            "O(1)",
+            "O(log N)",
+            "O(N)",
+            "O(N^2)"
+          ],
+          "correctIndex": 2,
+          "explanation": "In an unsorted array, you may need to inspect all N elements sequentially, resulting in O(N)."
+        },
+        {
+          "id": "q3",
+          "type": "one_word",
+          "prompt": "What term describes the situation when an attempt is made to push an item onto an already full stack?",
+          "correctAnswer": "Overflow",
+          "acceptableAnswers": ["overflow", "stack overflow"],
+          "explanation": "Stack Overflow occurs when exceeding allocated memory capacity of the stack."
+        }
+      ]
+    }
+  ]
+}

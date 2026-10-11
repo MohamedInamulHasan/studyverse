@@ -1,0 +1,6 @@
+Topic Title: முதல் படம் போல் உள்ளதை வட்டமிடுவோம்
+Description: முதல் படத்தோடு ஒப்பிட்டு ஒரே மாதிரியானதைக் கண்டறிதல்
+Unit: Unit_1_பாடி_ஆடி_விளையாடலாம்
+Subject: Tamil
+Term: Term_I
+Class: 1std

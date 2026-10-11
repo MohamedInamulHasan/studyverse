@@ -1,0 +1,387 @@
+{
+  "grades": [
+    { "id": "grade-10", "name": "Grade 10 (Secondary)", "description": "Core Foundation in Science, Math & Computing" },
+    { "id": "grade-12", "name": "Grade 12 (Higher Secondary / Senior)", "description": "Advanced STEM & Pre-College Prep" }
+  ],
+  "subjects": [
+    {
+      "id": "physics-12",
+      "gradeId": "grade-12",
+      "name": "Physics",
+      "icon": "Atom",
+      "color": "from-blue-600 to-indigo-600",
+      "badge": "STEM Core",
+      "description": "Mechanics, Electromagnetism, Modern Physics, and Wave Dynamics",
+      "totalUnits": 3,
+      "units": [
+        {
+          "id": "u-phy-1",
+          "title": "Unit 1: Laws of Motion & Gravitation",
+          "weightage": "25% of Exam",
+          "chapters": [
+            {
+              "id": "chap-phy-101",
+              "title": "Newtonian Dynamics & Momentum",
+              "duration": "4 Hours",
+              "syllabusTopics": [
+                "Inertia and Newton's Three Laws of Motion",
+                "Conservation of Linear Momentum",
+                "Impulse-Momentum Theorem",
+                "Friction: Static, Kinetic, and Rolling Coefficients",
+                "Circular Dynamics and Centripetal Force"
+              ],
+              "book": {
+                "title": "Principles of Classical Mechanics - Chapter 3",
+                "author": "Dr. E. Rutherford & H. Goldstein",
+                "readTime": "15 min read",
+                "sections": [
+                  {
+                    "heading": "1. The Fundamental Framework of Newton's Laws",
+                    "content": "Sir Isaac Newton formulated the three fundamental laws of motion in his 1687 treatise *Philosophiae Naturalis Principia Mathematica*. The first law, commonly known as the law of inertia, establishes that an isolated system experiences zero acceleration unless acted upon by a net external force.\n\nMathematically, \\(\\sum \\vec{F} = 0 \\implies \\frac{d\\vec{v}}{dt} = 0\\). Inertia is directly proportional to inertial mass, representing the intrinsic resistance of matter to alterations in its state of rest or uniform rectilinear motion."
+                  },
+                  {
+                    "heading": "2. Second Law: Force as Rate of Change of Momentum",
+                    "content": "The second law defines force precisely: the instantaneous rate of change of linear momentum \\(\\vec{p}\\) is proportional to the applied force. For invariant mass \\(m\\):\n\n$$\\vec{F}_{net} = \\frac{d\\vec{p}}{dt} = \\frac{d(m\\vec{v})}{dt} = m\\frac{d\\vec{v}}{dt} = m\\vec{a}$$\n\nKey Dimension: \\([M^1 L^1 T^{-2}]\\), SI Unit: Newton (\\(1\\text{ N} = 1\\text{ kg}\\cdot\\text{m/s}^2\\))."
+                  },
+                  {
+                    "heading": "3. Action-Reaction Pairs and Conservation of Momentum",
+                    "content": "Newton's third law asserts: *To every action there is always an equal and opposite reaction*. Critically, action and reaction forces act on **two different bodies**, which is why they never cancel each other out.\n\nWhen external forces sum to zero (\\(\\sum \\vec{F}_{ext} = 0\\)), total system momentum is invariant:\n$$m_1 \\vec{u}_1 + m_2 \\vec{u}_2 = m_1 \\vec{v}_1 + m_2 \\vec{v}_2$$\nThis principle governs rocket propulsion, ballistic pendulums, and particle collisions."
+                  }
+                ],
+                "formulas": [
+                  { "label": "Force", "formula": "F = m * a", "note": "Valid when mass is constant" },
+                  { "label": "Linear Momentum", "formula": "p = m * v", "note": "Vector quantity in direction of velocity" },
+                  { "label": "Impulse", "formula": "J = \\Delta p = F_{avg} * \\Delta t", "note": "Area under Force-Time curve" },
+                  { "label": "Centripetal Force", "formula": "F_c = \\frac{m v^2}{r}", "note": "Directed toward rotation center" }
+                ]
+              },
+              "notes": {
+                "summary": "Mechanics revolves around Newton's 3 laws. Force produces acceleration; momentum is conserved in isolated systems. Friction opposes impending relative motion.",
+                "keyPoints": [
+                  "Inertia depends solely on mass, not velocity or volume.",
+                  "Action and reaction forces occur simultaneously and act on distinct objects.",
+                  "Frictional force \\(f_s \\le \\mu_s N\\); kinetic friction is typically lower than maximum static friction.",
+                  "Apparent weight in an elevator accelerating upward is \\(N = m(g + a)\\); accelerating downward is \\(N = m(g - a)\\)."
+                ],
+                "examTips": "Always draw a Free Body Diagram (FBD) first! Resolve forces along parallel and perpendicular axes of motion before applying \\(F = ma\\)."
+              }
+            },
+            {
+              "id": "chap-phy-102",
+              "title": "Universal Gravitation & Orbital Mechanics",
+              "duration": "3.5 Hours",
+              "syllabusTopics": [
+                "Newton's Universal Law of Gravitation",
+                "Acceleration due to Gravity \\(g\\) and its variations with altitude and depth",
+                "Gravitational Potential Energy & Escape Velocity",
+                "Kepler's Laws of Planetary Motion",
+                "Geostationary vs Polar Satellites"
+              ],
+              "book": {
+                "title": "Cosmic Mechanics and Gravitational Fields - Chapter 5",
+                "author": "Dr. Carl Sagan & J. Kepler",
+                "readTime": "12 min read",
+                "sections": [
+                  {
+                    "heading": "1. Newton's Universal Law of Gravitation",
+                    "content": "Every particle attracts every other particle with a force proportional to the product of their masses and inversely proportional to the square of the distance between their centers:\n\n$$F = G \\frac{m_1 m_2}{r^2}$$\n\nWhere \\(G = 6.674 \\times 10^{-11}\\text{ N}\\cdot\\text{m}^2/\\text{kg}^2\\) is the universal gravitational constant, verified experimentally by Henry Cavendish."
+                  },
+                  {
+                    "heading": "2. Escape Velocity",
+                    "content": "Escape velocity is the minimum launch speed required for an unpowered projectile to overcome the gravitational binding energy of a celestial body without further propulsion:\n\n$$v_e = \\sqrt{\\frac{2GM}{R}} = \\sqrt{2gR}$$\n\nFor Earth (\\(R \\approx 6.4 \\times 10^6\\text{ m}\\)), \\(v_e \\approx 11.2\\text{ km/s}\\)."
+                  }
+                ],
+                "formulas": [
+                  { "label": "Gravitational Force", "formula": "F = G * (m1 * m2) / r^2", "note": "Inverse square law" },
+                  { "label": "Escape Velocity", "formula": "v_e = \\sqrt{2 * g * R}", "note": "Approx 11.2 km/s on Earth" },
+                  { "label": "Kepler's 3rd Law", "formula": "T^2 \\propto r^3", "note": "Orbital period squared is proportional to semi-major axis cubed" }
+                ]
+              },
+              "notes": {
+                "summary": "Gravitation is an attractive inverse-square central force. Escape velocity on Earth is 11.2 km/s. Kepler's third law connects orbital period to radius.",
+                "keyPoints": [
+                  "Value of \\(g\\) decreases both with height (\\(g_h = g(1 - 2h/R)\\)) and depth (\\(g_d = g(1 - d/R)\\)).",
+                  "At the center of the Earth, \\(g = 0\\).",
+                  "Geostationary satellites have an orbital time period of 24 hours at an altitude of approx 36,000 km."
+                ],
+                "examTips": "Remember that escape velocity is independent of the mass of the projectile! A feather and a rocket have the same escape velocity from Earth."
+              }
+            }
+          ]
+        },
+        {
+          "id": "u-phy-2",
+          "title": "Unit 2: Electromagnetism & Circuits",
+          "weightage": "30% of Exam",
+          "chapters": [
+            {
+              "id": "chap-phy-201",
+              "title": "Electric Charges, Fields & Gauss's Law",
+              "duration": "5 Hours",
+              "syllabusTopics": [
+                "Coulomb's Law and Superposition Principle",
+                "Electric Field Lines and Electric Dipole",
+                "Electric Flux and Gauss's Law Applications",
+                "Equipotential Surfaces and Capacitance"
+              ],
+              "book": {
+                "title": "Electrodynamics & Field Theory - Chapter 1",
+                "author": "David J. Griffiths",
+                "readTime": "18 min read",
+                "sections": [
+                  {
+                    "heading": "1. Coulomb's Law and Electrostatic Force",
+                    "content": "The electrostatic force between two stationary point charges \\(q_1\\) and \\(q_2\\) separated by distance \\(r\\) in vacuum is:\n\n$$F = \\frac{1}{4\\pi \\epsilon_0} \\frac{|q_1 q_2|}{r^2}$$\n\nWhere \\(\\epsilon_0 = 8.854 \\times 10^{-12}\\text{ C}^2/(\\text{N}\\cdot\\text{m}^2)\\) is the permittivity of free space."
+                  },
+                  {
+                    "heading": "2. Gauss's Law",
+                    "content": "The total electric flux \\(\\Phi_E\\) passing through any closed Gaussian surface equals the net charge enclosed divided by \\(\\epsilon_0\\):\n\n$$\\oint \\vec{E} \\cdot d\\vec{A} = \\frac{Q_{enclosed}}{\\epsilon_0}$$\n\nGauss's law simplifies field calculation for symmetrical configurations (spherical, cylindrical, planar)."
+                  }
+                ],
+                "formulas": [
+                  { "label": "Coulomb's Law", "formula": "F = (1 / 4\\pi\\epsilon_0) * (q1 * q2) / r^2", "note": "Force between point charges" },
+                  { "label": "Electric Flux", "formula": "\\Phi_E = \\oint E \\cdot dA = Q / \\epsilon_0", "note": "Gauss's law" },
+                  { "label": "Capacitance", "formula": "C = \\epsilon_0 * A / d", "note": "Parallel plate capacitor in vacuum" }
+                ]
+              },
+              "notes": {
+                "summary": "Coulomb's law dictates electrostatic forces. Gauss's law equates enclosed charge to total electric flux.",
+                "keyPoints": [
+                  "Electric field inside a hollow charged conductor is always zero.",
+                  "Electric field lines never cross each other.",
+                  "Dielectric of constant \\(K\\) placed between capacitor plates increases capacitance by factor \\(K\\)."
+                ],
+                "examTips": "When choosing a Gaussian surface, ensure \\(E\\) is either parallel or perpendicular to \\(dA\\) for easy dot product integration."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "math-12",
+      "gradeId": "grade-12",
+      "name": "Mathematics",
+      "icon": "Calculator",
+      "color": "from-purple-600 to-pink-600",
+      "badge": "Core Academic",
+      "description": "Calculus, Linear Algebra, Vectors, and Probability",
+      "totalUnits": 2,
+      "units": [
+        {
+          "id": "u-math-1",
+          "title": "Unit 1: Differential & Integral Calculus",
+          "weightage": "40% of Exam",
+          "chapters": [
+            {
+              "id": "chap-math-101",
+              "title": "Limits, Continuity & Derivatives",
+              "duration": "6 Hours",
+              "syllabusTopics": [
+                "L'Hôpital's Rule and Standard Limit Forms",
+                "Chain Rule, Product Rule, and Quotient Rule",
+                "Derivatives of Trigonometric, Exponential & Logarithmic Functions",
+                "Applications: Tangents, Normals, and Maxima/Minima"
+              ],
+              "book": {
+                "title": "Calculus: Early Transcendentals - Chapter 4",
+                "author": "James Stewart",
+                "readTime": "20 min read",
+                "sections": [
+                  {
+                    "heading": "1. Definition of the Derivative",
+                    "content": "The derivative of a real function \\(f(x)\\) measures the sensitivity to change of the function value with respect to a change in its argument. By the first principle:\n\n$$f'(x) = \\lim_{h \\to 0} \\frac{f(x + h) - f(x)}{h}$$\n\nGeometrically, it represents the instantaneous slope of the tangent line to the curve at coordinate \\((x, f(x))\\)."
+                  },
+                  {
+                    "heading": "2. Rules of Differentiation",
+                    "content": "- **Product Rule**: \\((u \\cdot v)' = u'v + uv'\\)\n- **Quotient Rule**: \\(\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}\\)\n- **Chain Rule**: \\(\\frac{d}{dx}[f(g(x))] = f'(g(x)) \\cdot g'(x)\\)"
+                  }
+                ],
+                "formulas": [
+                  { "label": "Power Rule", "formula": "d/dx(x^n) = n * x^(n - 1)", "note": "For any real exponent n" },
+                  { "label": "Chain Rule", "formula": "dy/dx = (dy/du) * (du/dx)", "note": "For composite functions" },
+                  { "label": "L'Hôpital's Rule", "formula": "\\lim \\frac{f(x)}{g(x)} = \\lim \\frac{f'(x)}{g'(x)}", "note": "Only for 0/0 or \\infty/\\infty forms" }
+                ]
+              },
+              "notes": {
+                "summary": "Derivatives represent rate of change and slope. Critical points occur where \\(f'(x) = 0\\); second derivative test determines concavity and extrema.",
+                "keyPoints": [
+                  "If \\(f'(c) = 0\\) and \\(f''(c) < 0\\), \\(x = c\\) is a local maximum.",
+                  "If \\(f'(c) = 0\\) and \\(f''(c) > 0\\), \\(x = c\\) is a local minimum.",
+                  "Differentiability strictly implies continuity, but continuity does NOT guarantee differentiability (e.g., \\(|x|\\) at \\(x=0\\))."
+                ],
+                "examTips": "Always check for indeterminate forms before applying L'Hôpital's Rule. Differentiate numerator and denominator separately, NOT as a quotient rule!"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cs-12",
+      "gradeId": "grade-12",
+      "name": "Computer Science",
+      "icon": "Code2",
+      "color": "from-emerald-600 to-teal-600",
+      "badge": "Technology",
+      "description": "Data Structures, Algorithms, Python & System Architecture",
+      "totalUnits": 2,
+      "units": [
+        {
+          "id": "u-cs-1",
+          "title": "Unit 1: Data Structures & Algorithmic Complexity",
+          "weightage": "35% of Exam",
+          "chapters": [
+            {
+              "id": "chap-cs-101",
+              "title": "Arrays, Stacks, Queues & Big-O Notation",
+              "duration": "5 Hours",
+              "syllabusTopics": [
+                "Asymptotic Notation: Big-O, Big-Omega, Big-Theta",
+                "Stack Operations: Push, Pop, Peek and Applications (Postfix evaluation)",
+                "Queue Operations: Enqueue, Dequeue, Circular Queue",
+                "Searching & Sorting: Binary Search vs Linear Search, QuickSort, MergeSort"
+              ],
+              "book": {
+                "title": "Introduction to Algorithms & Data Structures - Chapter 2",
+                "author": "Thomas H. Cormen, Charles E. Leiserson",
+                "readTime": "16 min read",
+                "sections": [
+                  {
+                    "heading": "1. Asymptotic Complexity and Big-O Notation",
+                    "content": "Big-O notation describes the upper bound limiting behavior of a function when the argument tends towards a particular value or infinity. It quantifies worst-case time or memory consumption:\n\n- \\(O(1)\\): Constant time (Hash table lookup, array indexing)\n- \\(O(\\log N)\\): Logarithmic time (Binary search)\n- \\(O(N)\\): Linear time (Linear scan)\n- \\(O(N \\log N)\\): Linearithmic time (Merge sort, Heap sort)\n- \\(O(N^2)\\): Quadratic time (Bubble sort, Selection sort)"
+                  },
+                  {
+                    "heading": "2. Stacks: Last-In, First-Out (LIFO)",
+                    "content": "A Stack is a linear data structure following the LIFO principle. Key operations include:\n\n- `push(element)`: Appends to top of stack - \\(O(1)\\)\n- `pop()`: Removes topmost element - \\(O(1)\\)\n- `peek()`: Inspects topmost element without deletion - \\(O(1)\\)\n\nApplications: Recursion call stacks, syntax parsing, bracket matching, undo/redo mechanisms."
+                  }
+                ],
+                "formulas": [
+                  { "label": "Binary Search Time", "formula": "T(N) = O(\\log_2 N)", "note": "Requires pre-sorted array" },
+                  { "label": "MergeSort Recurrence", "formula": "T(N) = 2T(N/2) + O(N) = O(N \\log N)", "note": "Stable divide-and-conquer sort" }
+                ]
+              },
+              "notes": {
+                "summary": "Big-O evaluates algorithm scalability. Stacks operate on LIFO; Queues operate on FIFO.",
+                "keyPoints": [
+                  "Binary search requires a sorted array; time complexity is \\(O(\\log N)\\).",
+                  "Stack overflow occurs when pushing to a full stack; stack underflow happens when popping an empty stack.",
+                  "Circular queue avoids memory wastage encountered in basic linear array-based queues."
+                ],
+                "examTips": "Be prepared to convert infix expressions to postfix using an operator stack and step-by-step trace tables."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chem-12",
+      "gradeId": "grade-12",
+      "name": "Chemistry",
+      "icon": "FlaskConical",
+      "color": "from-amber-600 to-orange-600",
+      "badge": "STEM Core",
+      "description": "Chemical Bonding, Thermodynamics, Organic Reactions & Equilibrium",
+      "totalUnits": 1,
+      "units": [
+        {
+          "id": "u-chem-1",
+          "title": "Unit 1: Chemical Bonding & Molecular Structure",
+          "weightage": "20% of Exam",
+          "chapters": [
+            {
+              "id": "chap-chem-101",
+              "title": "VSEPR Theory, Hybridization & Molecular Orbitals",
+              "duration": "4 Hours",
+              "syllabusTopics": [
+                "Octet Rule and its Limitations",
+                "Valence Shell Electron Pair Repulsion (VSEPR) Theory",
+                "Hybridization types: sp, sp2, sp3, sp3d",
+                "Molecular Orbital Theory (MOT) and Bond Order"
+              ],
+              "book": {
+                "title": "Inorganic & Physical Chemistry - Chapter 4",
+                "author": "J.D. Lee",
+                "readTime": "14 min read",
+                "sections": [
+                  {
+                    "heading": "1. VSEPR Theory and Molecular Geometry",
+                    "content": "VSEPR postulates that electron pairs in the valence shell of a central atom repel each other and orient themselves to minimize electrostatic repulsion. The order of repulsive forces is:\n\n$$\\text{Lone Pair - Lone Pair} > \\text{Lone Pair - Bond Pair} > \\text{Bond Pair - Bond Pair}$$\n\nHence, \\(\\text{CH}_4\\) has tetrahedral geometry (109.5°), \\(\\text{NH}_3\\) is trigonal pyramidal (107°), and \\(\\text{H}_2\\text{O}\\) has a bent structure (104.5°)."
+                  }
+                ],
+                "formulas": [
+                  { "label": "Bond Order", "formula": "\\text{Bond Order} = \\frac{1}{2} (N_b - N_a)", "note": "Nb: bonding electrons, Na: antibonding electrons" },
+                  { "label": "Formal Charge", "formula": "FC = V - L - \\frac{B}{2}", "note": "V: valence, L: lone pair e-, B: bond pair e-" }
+                ]
+              },
+              "notes": {
+                "summary": "Repulsion between valence electrons dictates geometry. Bond order \\(> 0\\) signifies stable molecular existence.",
+                "keyPoints": [
+                  "Water has \\(sp^3\\) hybridization with 2 lone pairs giving a bent shape of 104.5°.",
+                  "If bond order is 0, the diatomic molecule does not exist (e.g. \\(\\text{He}_2\\)).",
+                  "Molecules with unpaired electrons in molecular orbitals are paramagnetic (e.g. \\(\\text{O}_2\\))."
+                ],
+                "examTips": "Remember oxygen (\\(\\text{O}_2\\)) is paramagnetic despite having an even number of electrons—MOT proves this with 2 unpaired electrons in \\(\\pi^*\\) orbitals!"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bio-10",
+      "gradeId": "grade-10",
+      "name": "Biology & Life Science",
+      "icon": "Dna",
+      "color": "from-emerald-500 to-green-600",
+      "badge": "Life Science",
+      "description": "Cell Structure, Genetics, Photosynthesis & Human Physiology",
+      "totalUnits": 1,
+      "units": [
+        {
+          "id": "u-bio-1",
+          "title": "Unit 1: Cellular Machinery & Genetics",
+          "weightage": "30% of Exam",
+          "chapters": [
+            {
+              "id": "chap-bio-101",
+              "title": "Cellular Respiration, Photosynthesis & DNA",
+              "duration": "4 Hours",
+              "syllabusTopics": [
+                "Structure of Plant and Animal Cells",
+                "Light & Dark reactions of Photosynthesis",
+                "Aerobic vs Anaerobic Respiration (ATP synthesis)",
+                "DNA Double Helix Structure & Replication Basics"
+              ],
+              "book": {
+                "title": "Foundations of Modern Biology - Chapter 6",
+                "author": "Campbell & Reece",
+                "readTime": "15 min read",
+                "sections": [
+                  {
+                    "heading": "1. Photosynthesis Equation & Mechanism",
+                    "content": "Photosynthesis is the biochemical pathway converting solar photons into chemical bond energy stored in glucose:\n\n$$6\\text{CO}_2 + 6\\text{H}_2\\text{O} \\xrightarrow{h\\nu, \\text{chlorophyll}} \\text{C}_6\\text{H}_{12}\\text{O}_6 + 6\\text{O}_2$$\n\nIt takes place in chloroplasts in two phases: the light-dependent reactions in thylakoids yielding ATP and NADPH, and the Calvin cycle in the stroma fixing \\(\\text{CO}_2\\)."
+                  }
+                ],
+                "formulas": [
+                  { "label": "Photosynthesis", "formula": "6CO2 + 6H2O -> C6H12O6 + 6O2", "note": "Produces glucose and oxygen" },
+                  { "label": "Aerobic Respiration", "formula": "C6H12O6 + 6O2 -> 6CO2 + 6H2O + 36-38 ATP", "note": "High energy yield in mitochondria" }
+                ]
+              },
+              "notes": {
+                "summary": "Chloroplasts synthesize glucose; mitochondria synthesize ATP via cellular respiration. DNA is a double helix held by hydrogen bonds.",
+                "keyPoints": [
+                  "Adenosine Triphosphate (ATP) is the universal energy currency of cells.",
+                  "In DNA, Adenine pairs with Thymine (2 H-bonds) and Guanine pairs with Cytosine (3 H-bonds).",
+                  "Anaerobic respiration in yeast produces ethanol and \\(\\text{CO}_2\\); in human muscle cells it produces lactic acid."
+                ],
+                "examTips": "Watch out for question phrasing on gas exchange: plants produce oxygen during the day via photosynthesis, but respire consuming oxygen continuously 24/7!"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

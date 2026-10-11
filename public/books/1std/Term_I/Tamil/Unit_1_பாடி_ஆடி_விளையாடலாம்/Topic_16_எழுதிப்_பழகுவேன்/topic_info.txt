@@ -1,0 +1,6 @@
+Topic Title: எழுதிப் பழகுவேன்
+Description: உயிரெழுத்துக்களையும் ஆய்த எழுத்தையும் புள்ளிகளின் மீது எழுதிப் பழகுவோம்
+Unit: Unit_1_பாடி_ஆடி_விளையாடலாம்
+Subject: Tamil
+Term: Term_I
+Class: 1std

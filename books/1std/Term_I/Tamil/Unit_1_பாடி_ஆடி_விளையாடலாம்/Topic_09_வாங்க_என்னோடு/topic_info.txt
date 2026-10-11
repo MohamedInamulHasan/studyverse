@@ -1,0 +1,6 @@
+Topic Title: வாங்க என்னோடு
+Description: கோடுகளின் வழியே விரல் வரைந்து பழகுவோம்
+Unit: Unit_1_பாடி_ஆடி_விளையாடலாம்
+Subject: Tamil
+Term: Term_I
+Class: 1std

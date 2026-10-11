@@ -1,0 +1,6 @@
+Topic Title: விபத்தில்லா பாதுகாப்பு
+Description: வீடு மற்றும் சாலைப் பாதுகாப்பு விதிகள்
+Unit: Unit_2_பாதுகாப்பும்_நற்பழக்கங்களும்
+Subject: EVS
+Term: Term_III
+Class: 1std

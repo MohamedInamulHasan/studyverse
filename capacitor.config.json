@@ -1,0 +1,6 @@
+{
+  "appId": "com.studyverse.studentplatform",
+  "appName": "StudyVerse",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
