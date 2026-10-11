@@ -1,6 +1,6 @@
 // src/components/ColorMatchingLetterGame.jsx
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { RotateCcw, Eraser } from 'lucide-react';
+import { RotateCcw, Eraser, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const BASE = 'https://res.cloudinary.com/qhsftimd/image/upload/f_auto,q_auto/studyverse/images/tamil_class1/topic11/';
 
@@ -32,7 +32,6 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
   const strokesRef       = useRef([]);
   const currentStrokeRef = useRef(null);
 
-  // ── Redraw Canvas: User paint strokes on BOTTOM, lineart image on TOP ────
   const redraw = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -70,7 +69,6 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
       ctx.stroke();
     });
 
-    // Reset composite mode to source-over for top image
     ctx.globalCompositeOperation = 'source-over';
 
     // 3. Draw lineart image ON TOP
@@ -94,19 +92,6 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
       redraw();
     };
   }, [card.imgSrc, redraw]);
-
-  // Global mouseup listener — stops drawing safely
-  useEffect(() => {
-    const handleGlobalMouseUp = () => {
-      if (isDrawingRef.current && currentStrokeRef.current) {
-        strokesRef.current.push(currentStrokeRef.current);
-        currentStrokeRef.current = null;
-      }
-      isDrawingRef.current = false;
-    };
-    window.addEventListener('mouseup', handleGlobalMouseUp);
-    return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
-  }, []);
 
   const getCanvasPoint = (e) => {
     const canvas = canvasRef.current;
@@ -152,14 +137,6 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
     isDrawingRef.current = false;
   };
 
-  // Color letter circle when dragging or pressing over it
-  const handleLetterColorTrigger = (letter, e) => {
-    if (e.buttons === 1 || isDrawingRef.current) {
-      onColorLetter(card.id, letter);
-    }
-  };
-
-  // Round SVG cursor for paint and eraser
   const cursorSvg = selectedColor === 'eraser'
     ? `<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='7' fill='%23ffffff' stroke='%23000000' stroke-width='2'/></svg>`
     : `<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='7' fill='${encodeURIComponent(selectedColor)}' stroke='%23ffffff' stroke-width='2'/></svg>`;
@@ -169,9 +146,7 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
   };
 
   return (
-    <div
-      className="rounded-[28px] bg-white border-2 border-[#84cc16] p-2 sm:p-3 flex items-center justify-center shadow-2xs relative overflow-visible transition-all w-full max-w-xl aspect-[4/3]"
-    >
+    <div className="rounded-[28px] bg-white border-2 border-[#84cc16] p-2 sm:p-3 flex items-center justify-center shadow-xs relative overflow-visible transition-all w-full max-w-lg aspect-[4/3] mx-auto">
       {/* Full 4:3 Canvas for Lineart Image */}
       <canvas
         ref={canvasRef}
@@ -185,14 +160,13 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
         onPointerCancel={stopDrawing}
       />
 
-      {/* Right Border Embedded Option Circles (அ & ஆ) */}
-      <div className="absolute -right-6 sm:-right-7 top-0 bottom-0 my-auto h-36 flex flex-col justify-between items-center z-10">
+      {/* Right Border Embedded Option Circles */}
+      <div className="absolute -right-5 sm:-right-7 top-0 bottom-0 my-auto h-36 flex flex-col justify-between items-center z-10">
         <div className="absolute top-0 bottom-0 w-0.5 bg-[#84cc16] -z-10" />
 
         {card.options.map((letter) => {
           const key = `${card.id}_${letter}`;
           const letterPaintedColor = letterColors[key];
-
           let bgStyle = (letterPaintedColor && letterPaintedColor !== 'eraser') ? letterPaintedColor : '#ffffff';
 
           return (
@@ -200,14 +174,12 @@ const CanvasCard = ({ card, selectedColor, letterColors, onColorLetter }) => {
               key={letter}
               style={{
                 backgroundColor: bgStyle,
-                color: '#1c1917', // Text always stays dark black!
+                color: '#1c1917',
                 border: '2px solid #84cc16',
-                ...customCursorStyle
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
               }}
-              onMouseDown={() => onColorLetter(card.id, letter)}
-              onMouseEnter={(e) => handleLetterColorTrigger(letter, e)}
-              onPointerEnter={(e) => handleLetterColorTrigger(letter, e)}
-              className="w-12 h-12 sm:w-14 sm:h-14 rounded-full font-black text-xl sm:text-2xl flex items-center justify-center select-none shadow-xs transition-colors duration-150"
+              onClick={() => onColorLetter(card.id, letter)}
+              className="w-11 h-11 sm:w-14 sm:h-14 rounded-full font-black text-xl sm:text-2xl flex items-center justify-center select-none shadow-xs transition-colors duration-150 cursor-pointer active:scale-95"
             >
               {letter}
             </div>
@@ -223,6 +195,22 @@ export const ColorMatchingLetterGame = () => {
   const [selectedColor, setSelectedColor] = useState(PALETTE_COLORS[6].hex); // Default green
   const [letterColors,  setLetterColors]  = useState({});
   const [resetTrigger,  setResetTrigger]  = useState(0);
+  const [currentIndex,  setCurrentIndex]  = useState(0);
+
+  const cards = [
+    { id: 'p1',  title: 'ஆடு',       correctLetter: 'ஆ', options: ['அ', 'ஆ'], imgSrc: `${BASE}aadu.png`,        zoom: 1.0 },
+    { id: 'p2',  title: 'அணில்',     correctLetter: 'அ', options: ['அ', 'ஆ'], imgSrc: `${BASE}anil.png`,        zoom: 1.0 },
+    { id: 'p3',  title: 'இலை',       correctLetter: 'இ', options: ['இ', 'ஈ'], imgSrc: `${BASE}ilai.png`,        zoom: 1.0 },
+    { id: 'p4',  title: 'ஈசல்',      correctLetter: 'ஈ', options: ['இ', 'ஈ'], imgSrc: `${BASE}eesal.png`,       zoom: 1.0 },
+    { id: 'p5',  title: 'உரல்',      correctLetter: 'உ', options: ['உ', 'ஊ'], imgSrc: `${BASE}ural.png`,        zoom: 1.0 },
+    { id: 'p6',  title: 'ஊஞ்சல்',    correctLetter: 'ஊ', options: ['உ', 'ஊ'], imgSrc: `${BASE}oonjal.png`,      zoom: 1.0 },
+    { id: 'p7',  title: 'எலி',       correctLetter: 'எ', options: ['எ', 'ஏ'], imgSrc: `${BASE}eli.png`,         zoom: 1.0 },
+    { id: 'p8',  title: 'ஏணி',       correctLetter: 'ஏ', options: ['எ', 'ஏ'], imgSrc: `${BASE}eani.png`,        zoom: 1.0 },
+    { id: 'p9',  title: 'ஐந்து',     correctLetter: 'ஐ', options: ['ஒ', 'ஐ'], imgSrc: `${BASE}ainthu.png`,      zoom: 1.0 },
+    { id: 'p10', title: 'ஒட்டகம்',   correctLetter: 'ஒ', options: ['ஒ', 'ஓ'], imgSrc: `${BASE}ottagam.png`,     zoom: 1.0 },
+    { id: 'p11', title: 'ஓணான்',     correctLetter: 'ஓ', options: ['ஒ', 'ஓ'], imgSrc: `${BASE}onaan.png`,       zoom: 1.0 },
+    { id: 'p12', title: 'ஔடதம்',     correctLetter: 'ஔ', options: ['ஒ', 'ஔ'], imgSrc: `${BASE}avvadham.png`,    zoom: 1.0 }
+  ];
 
   const handleColorLetter = (cardId, letter) => {
     const key = `${cardId}_${letter}`;
@@ -236,115 +224,22 @@ export const ColorMatchingLetterGame = () => {
     setLetterColors({});
     setSelectedColor(PALETTE_COLORS[6].hex);
     setResetTrigger(prev => prev + 1);
-    const firstEl = document.getElementById('color-match-card-0');
-    if (firstEl) {
-      firstEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    setCurrentIndex(0);
   };
 
-  const cards = [
-    {
-      id: 'p1',
-      title: 'ஆடு',
-      correctLetter: 'ஆ',
-      options: ['அ', 'ஆ'],
-      imgSrc: `${BASE}aadu.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p2',
-      title: 'அல்லி',
-      correctLetter: 'அ',
-      options: ['அ', 'ஆ'],
-      imgSrc: `${BASE}alli.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p3',
-      title: 'ஈச்சமரம்',
-      correctLetter: 'ஈ',
-      options: ['இ', 'ஈ'],
-      imgSrc: `${BASE}eecchamaram.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p4',
-      title: 'இலை',
-      correctLetter: 'இ',
-      options: ['இ', 'ஈ'],
-      imgSrc: `${BASE}ilai.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p5',
-      title: 'உண்டியல்',
-      correctLetter: 'உ',
-      options: ['உ', 'ஊ'],
-      imgSrc: `${BASE}undiyal.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p6',
-      title: 'ஊதல்',
-      correctLetter: 'ஊ',
-      options: ['உ', 'ஊ'],
-      imgSrc: `${BASE}oothal.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p7',
-      title: 'ஏணி',
-      correctLetter: 'ஏ',
-      options: ['எ', 'ஏ'],
-      imgSrc: `${BASE}yeni.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p8',
-      title: 'எலி',
-      correctLetter: 'எ',
-      options: ['எ', 'ஏ'],
-      imgSrc: `${BASE}eli.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p9',
-      title: 'ஐந்து',
-      correctLetter: 'ஐ',
-      options: ['ஒ', 'ஐ'],
-      imgSrc: `${BASE}ainthu.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p10',
-      title: 'ஒட்டகம்',
-      correctLetter: 'ஒ',
-      options: ['ஒ', 'ஓ'],
-      imgSrc: `${BASE}ottagam.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p11',
-      title: 'ஓணான்',
-      correctLetter: 'ஓ',
-      options: ['ஒ', 'ஓ'],
-      imgSrc: `${BASE}onaan.png`,
-      zoom: 1.0,
-    },
-    {
-      id: 'p12',
-      title: 'ஔடதம்',
-      correctLetter: 'ஔ',
-      options: ['ஒ', 'ஔ'],
-      imgSrc: `${BASE}avvadham.png`,
-      zoom: 1.0,
-    }
-  ];
+  const handlePrev = () => {
+    if (currentIndex > 0) setCurrentIndex(c => c - 1);
+  };
+
+  const handleNext = () => {
+    if (currentIndex < cards.length - 1) setCurrentIndex(c => c + 1);
+  };
+
+  const currentCard = cards[currentIndex];
 
   return (
-    <div className="space-y-6 pb-12 select-none w-full max-w-xl mx-auto pr-6 sm:pr-8">
-
-      {/* ── 2-Row Palette: Sticky at top for easy painting while scrolling ── */}
+    <div className="space-y-4 pb-12 select-none w-full max-w-xl mx-auto px-2">
+      {/* ── 2-Row Palette: Sticky at top for easy painting ── */}
       <div className="sticky top-0 z-30 bg-slate-50/95 backdrop-blur-md py-2 px-1 rounded-2xl shadow-xs flex justify-center">
         <div className="grid grid-cols-8 gap-2.5 sm:gap-3 max-w-md w-full justify-items-center">
           {PALETTE_COLORS.map(c => {
@@ -380,21 +275,56 @@ export const ColorMatchingLetterGame = () => {
         </div>
       </div>
 
-      {/* ── List of 4:3 Canvas Cards ── */}
-      <div className="space-y-8">
-        {cards.map((card, cIdx) => (
-          <div id={`color-match-card-${cIdx}`} key={`${card.id}_${resetTrigger}`}>
-            <CanvasCard
-              card={card}
-              selectedColor={selectedColor}
-              letterColors={letterColors}
-              onColorLetter={handleColorLetter}
-            />
-          </div>
-        ))}
+      {/* ── 1 Question Card at a time (Fits screen completely, no vertical scroll issues!) ── */}
+      <div className="pt-2 pr-5 sm:pr-7">
+        <div className="text-center font-black text-slate-800 text-sm sm:text-base pb-2">
+          {currentIndex + 1}. {currentCard.title}
+        </div>
+        <CanvasCard
+          key={`${currentCard.id}_${resetTrigger}`}
+          card={currentCard}
+          selectedColor={selectedColor}
+          letterColors={letterColors}
+          onColorLetter={handleColorLetter}
+        />
       </div>
 
-      {/* ── Bottom Reset Button ── */}
+      {/* ── Prev / Next Horizontal Navigation Buttons ── */}
+      <div className="flex items-center justify-between gap-3 pt-3 px-1">
+        <button
+          type="button"
+          onClick={handlePrev}
+          disabled={currentIndex === 0}
+          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+            currentIndex === 0
+              ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+              : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
+          }`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>முந்தையது</span>
+        </button>
+
+        <div className="px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-black text-xs sm:text-sm">
+          {currentIndex + 1} / {cards.length}
+        </div>
+
+        <button
+          type="button"
+          onClick={handleNext}
+          disabled={currentIndex === cards.length - 1}
+          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+            currentIndex === cards.length - 1
+              ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+              : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
+          }`}
+        >
+          <span>அடுத்தது</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* ── Bottom Reset Button (Resets all and goes back to Question 1) ── */}
       <div className="flex justify-center pt-2 pb-4">
         <button
           type="button"

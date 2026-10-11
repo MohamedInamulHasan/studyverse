@@ -1,6 +1,6 @@
 // src/components/TraceLettersGame.jsx
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const LETTERS = [
   { id: 'l1',  char: 'அ', key: 'a',      fontSize: 260, y: 275 },
@@ -91,11 +91,10 @@ const TraceLetterCard = ({
   return (
     <div
       id={`trace-card-${idx}`}
-      className="rounded-[32px] sm:rounded-[36px] bg-white border border-slate-200 border-b-[4px] border-b-slate-300 shadow-sm relative aspect-square w-full flex flex-col items-center justify-between p-3.5 sm:p-4 overflow-hidden transition-all"
-      style={{ touchAction: 'pan-y' }}
+      className="rounded-[32px] sm:rounded-[36px] bg-white border border-slate-200 border-b-[4px] border-b-slate-300 shadow-sm relative aspect-square w-full max-w-sm sm:max-w-md mx-auto flex flex-col items-center justify-between p-3.5 sm:p-4 overflow-hidden transition-all"
     >
-      {/* Top Header Bar: Number & Chunky Green Tick Mark (Free Touch Scroll Zone) */}
-      <div className="w-full flex items-center justify-between z-20 select-none px-1" style={{ touchAction: 'pan-y' }}>
+      {/* Top Header Bar: Number & Chunky Green Tick Mark */}
+      <div className="w-full flex items-center justify-between z-20 select-none px-1">
         <div className="text-slate-900 font-black text-lg sm:text-xl">
           {idx + 1}.
         </div>
@@ -189,8 +188,8 @@ const TraceLetterCard = ({
         />
       </div>
 
-      {/* Bottom Bar: Small Circular Retry Icon & Touch Scroll Zone */}
-      <div className="w-full flex items-center justify-end z-20 px-1" style={{ touchAction: 'pan-y' }}>
+      {/* Bottom Bar: Small Circular Retry Icon */}
+      <div className="w-full flex items-center justify-end z-20 px-1">
         <button
           type="button"
           onClick={() => onResetRow(item.id)}
@@ -205,6 +204,7 @@ const TraceLetterCard = ({
 };
 
 export const TraceLettersGame = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [strokesByLetter, setStrokesByLetter] = useState({});
   const [completedLetters, setCompletedLetters] = useState({});
   const canvasRefs = useRef({});
@@ -243,7 +243,15 @@ export const TraceLettersGame = () => {
     });
   }, []);
 
-  // Pointer Event Handlers (Fixed for Mobile Screens and Laptops)
+  // Redraw when switching letters
+  useEffect(() => {
+    const curLetter = LETTERS[currentIndex];
+    if (curLetter) {
+      redrawCanvas(curLetter.id, strokesByLetter[curLetter.id] || []);
+    }
+  }, [currentIndex, strokesByLetter, redrawCanvas]);
+
+  // Pointer Event Handlers
   const handlePointerDown = (letterId, e) => {
     if (e.cancelable) e.preventDefault();
     if (e.target && e.target.setPointerCapture) {
@@ -273,10 +281,8 @@ export const TraceLettersGame = () => {
     setStrokesByLetter(prev => {
       const existing = prev[letterId] || [];
       if (existing.length === 0) return prev;
-      const lastIdx = existing.length - 1;
-      const updatedLast = [...existing[lastIdx], pt];
-      const updated = [...existing];
-      updated[lastIdx] = updatedLast;
+      const lastStroke = [...existing[existing.length - 1], pt];
+      const updated    = [...existing.slice(0, -1), lastStroke];
       redrawCanvas(letterId, updated);
       return { ...prev, [letterId]: updated };
     });
@@ -317,15 +323,11 @@ export const TraceLettersGame = () => {
       if (coverageRatio >= 0.90) { // Coverage threshold
         setCompletedLetters(prev => ({ ...prev, [letterId]: true }));
 
-        // Automatically advance / smooth scroll to the next card
-        const currentIdx = LETTERS.findIndex(l => l.id === letterId);
-        if (currentIdx !== -1 && currentIdx < LETTERS.length - 1) {
+        // Automatically advance to the next card after completion
+        if (currentIndex < LETTERS.length - 1) {
           setTimeout(() => {
-            const nextElem = document.getElementById(`trace-card-${currentIdx + 1}`);
-            if (nextElem) {
-              nextElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-          }, 500);
+            setCurrentIndex(c => c + 1);
+          }, 650);
         }
       }
     }
@@ -353,37 +355,71 @@ export const TraceLettersGame = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     });
-
-    // Redirect / smooth scroll to first question
-    setTimeout(() => {
-      const firstCard = document.getElementById('trace-card-0');
-      if (firstCard) {
-        firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 100);
+    setCurrentIndex(0);
   };
 
+  const handlePrev = () => {
+    if (currentIndex > 0) setCurrentIndex(c => c - 1);
+  };
+
+  const handleNext = () => {
+    if (currentIndex < LETTERS.length - 1) setCurrentIndex(c => c + 1);
+  };
+
+  const currentItem = LETTERS[currentIndex];
+
   return (
-    <div className="space-y-6 pb-12 select-none w-full max-w-md sm:max-w-lg mx-auto px-2 sm:px-4">
-      {/* ── 13 1:1 Aspect Ratio Square Letter Cards (1 card per row) ── */}
-      <div className="space-y-6">
-        {LETTERS.map((item, idx) => (
-          <TraceLetterCard
-            key={item.id}
-            item={item}
-            idx={idx}
-            isCompleted={!!completedLetters[item.id]}
-            onResetRow={handleResetRow}
-            canvasRef={el => (canvasRefs.current[item.id] = el)}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-          />
-        ))}
+    <div className="space-y-4 pb-12 select-none w-full max-w-sm sm:max-w-md mx-auto px-2">
+      {/* ── 1 Square Letter Card at a Time (Fits mobile screen fully!) ── */}
+      <TraceLetterCard
+        key={currentItem.id}
+        item={currentItem}
+        idx={currentIndex}
+        isCompleted={!!completedLetters[currentItem.id]}
+        onResetRow={handleResetRow}
+        canvasRef={el => (canvasRefs.current[currentItem.id] = el)}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+      />
+
+      {/* ── Prev / Next Horizontal Navigation Buttons ── */}
+      <div className="flex items-center justify-between gap-3 pt-2 px-1">
+        <button
+          type="button"
+          onClick={handlePrev}
+          disabled={currentIndex === 0}
+          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+            currentIndex === 0
+              ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+              : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
+          }`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>முந்தையது</span>
+        </button>
+
+        <div className="px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-black text-xs sm:text-sm">
+          {currentIndex + 1} / {LETTERS.length}
+        </div>
+
+        <button
+          type="button"
+          onClick={handleNext}
+          disabled={currentIndex === LETTERS.length - 1}
+          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+            currentIndex === LETTERS.length - 1
+              ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+              : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
+          }`}
+        >
+          <span>அடுத்தது</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
 
       {/* ── Bottom Reset / Retry Button (Resets All & Redirects to Question 1) ── */}
-      <div className="flex justify-center pt-3 pb-4">
+      <div className="flex justify-center pt-2 pb-4">
         <button
           type="button"
           onClick={handleResetAll}

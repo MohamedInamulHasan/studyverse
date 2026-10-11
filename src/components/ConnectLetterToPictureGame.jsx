@@ -1,6 +1,6 @@
 // src/components/ConnectLetterToPictureGame.jsx
 import React, { useState, useRef, useCallback } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const BASE = 'https://res.cloudinary.com/qhsftimd/image/upload/f_auto,q_auto/studyverse/images/tamil_class1/topic12/';
 const VERSION = '?v=' + Date.now();
@@ -8,8 +8,8 @@ const VERSION = '?v=' + Date.now();
 // ── Layout constants
 const CX = 170;          // center x
 const CY = 170;          // center y
-const CENTER_R = 36;     // reduced center letter circle radius
-const IMG_R = 35;        // reduced image circle radius
+const CENTER_R = 36;     // center letter circle radius
+const IMG_R = 35;        // image circle radius
 const IMG_SIZE = 70;     // display size for images
 const NODE_RADIUS = 125; // expanded distance from center to image centers for longer lines
 
@@ -29,8 +29,6 @@ const linePoints = (item) => {
   };
 };
 
-// ── Node positions: hexagonal layout at NODE_RADIUS=125 around (170,170)
-// offset_x = 125 * sin(60°) = 108 | offset_y = 125 * cos(60°) = 62.5
 const ITEMS_A = [
   { id: 'a1', img: `${BASE}aalamaram_circle.png${VERSION}`,  correct: false, cx: 170,       cy: 170 - 125 }, // top
   { id: 'a2', img: `${BASE}anil_circle.png${VERSION}`,       correct: true,  cx: 170 - 108, cy: 170 - 62  }, // top-left
@@ -68,10 +66,10 @@ const ITEMS_EE = [
 ];
 
 const PANELS = [
-  { id: 'a',  letter: 'அ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_A  },
-  { id: 'aa', letter: 'ஆ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_AA },
-  { id: 'i',  letter: 'இ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_I  },
-  { id: 'ee', letter: 'ஈ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_EE },
+  { id: 'a',  title: 'அ - எழுத்தை உரிய படத்தோடு இணைப்போம்', letter: 'அ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_A  },
+  { id: 'aa', title: 'ஆ - எழுத்தை உரிய படத்தோடு இணைப்போம்', letter: 'ஆ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_AA },
+  { id: 'i',  title: 'இ - எழுத்தை உரிய படத்தோடு இணைப்போம்', letter: 'இ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_I  },
+  { id: 'ee', title: 'ஈ - எழுத்தை உரிய படத்தோடு இணைப்போம்', letter: 'ஈ', letterColor: '#e91e8c', lineColor: '#e91e8c', items: ITEMS_EE },
 ];
 
 // ── Radial Wheel with drag-to-connect ────────────────────────────────────────
@@ -131,7 +129,6 @@ function RadialWheel({ panel, connections, onConnect }) {
     setDragPos(null);
   };
 
-  // rubber-band line: from center circle edge toward drag position
   const getDragLineStart = (pos) => {
     const dx = pos.x - CX;
     const dy = pos.y - CY;
@@ -150,7 +147,7 @@ function RadialWheel({ panel, connections, onConnect }) {
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
     >
-      {/* ── Permanent connection lines (edge to edge) ── */}
+      {/* Permanent connection lines */}
       {panel.items.map(item => {
         if (!connections.has(item.id)) return null;
         const { x1, y1, x2, y2 } = linePoints(item);
@@ -158,25 +155,26 @@ function RadialWheel({ panel, connections, onConnect }) {
           <line key={`line-${item.id}`}
             x1={x1} y1={y1} x2={x2} y2={y2}
             stroke={panel.lineColor}
-            strokeWidth="3"
+            strokeWidth="3.5"
             strokeLinecap="round"
           />
         );
       })}
 
-      {/* ── Wrong flash line (edge to edge) ── */}
-      {wrongId && (() => {
-        const item = panel.items.find(i => i.id === wrongId);
-        if (!item) return null;
+      {/* Dashed guide lines */}
+      {panel.items.map(item => {
         const { x1, y1, x2, y2 } = linePoints(item);
         return (
-          <line x1={x1} y1={y1} x2={x2} y2={y2}
-            stroke="#f87171" strokeWidth="3" strokeLinecap="round" opacity="0.9"
+          <line key={`guide-${item.id}`}
+            x1={x1} y1={y1} x2={x2} y2={y2}
+            stroke="#cbd5e1"
+            strokeWidth="1.5"
+            strokeDasharray="4 4"
           />
         );
-      })()}
+      })}
 
-      {/* ── Rubber-band drag line ── */}
+      {/* Live drag rubber-band line */}
       {dragPos && (() => {
         const start = getDragLineStart(dragPos);
         return (
@@ -185,18 +183,27 @@ function RadialWheel({ panel, connections, onConnect }) {
             x2={dragPos.x} y2={dragPos.y}
             stroke={panel.lineColor}
             strokeWidth="3"
-            strokeLinecap="round"
-            strokeDasharray="7 4"
-            opacity="0.6"
+            strokeDasharray="5 4"
+            opacity="0.8"
           />
         );
       })()}
 
-      {/* ── Images ── */}
+      {/* Images */}
       {panel.items.map(item => {
         const isConnected = connections.has(item.id);
+        const isWrong = wrongId === item.id;
+
         return (
           <g key={item.id}>
+            {/* Outer ring */}
+            <circle
+              cx={item.cx} cy={item.cy} r={IMG_R}
+              fill="white"
+              stroke={isWrong ? '#ef4444' : isConnected ? '#22c55e' : '#e2e8f0'}
+              strokeWidth={isWrong ? '3' : isConnected ? '3' : '2'}
+              style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.08))' }}
+            />
             <image
               href={item.img}
               x={item.cx - IMG_SIZE / 2}
@@ -206,7 +213,7 @@ function RadialWheel({ panel, connections, onConnect }) {
               preserveAspectRatio="xMidYMid meet"
               style={{ pointerEvents: 'none' }}
             />
-            {/* Tick badge in the right upper corner when correctly connected */}
+            {/* Tick badge when correctly connected */}
             {isConnected && (
               <g transform={`translate(${item.cx + IMG_R * 0.65}, ${item.cy - IMG_R * 0.65})`}>
                 <circle r="11" fill="#22c55e" stroke="#ffffff" strokeWidth="2" />
@@ -224,12 +231,12 @@ function RadialWheel({ panel, connections, onConnect }) {
         );
       })}
 
-      {/* ── Center letter (drag source) ── */}
+      {/* Center letter (drag source) */}
       <circle
         cx={CX} cy={CY} r={CENTER_R}
         fill="white"
         stroke={panel.letterColor}
-        strokeWidth="3"
+        strokeWidth="3.5"
         style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.15))', cursor: 'grab', touchAction: 'none' }}
         onPointerDown={onCenterDown}
       />
@@ -253,6 +260,7 @@ function RadialWheel({ panel, connections, onConnect }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export const ConnectLetterToPictureGame = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [connections, setConnections] = useState({
     a: new Set(),
     aa: new Set(),
@@ -275,27 +283,72 @@ export const ConnectLetterToPictureGame = () => {
       i: new Set(),
       ee: new Set()
     });
-    const firstEl = document.getElementById('connect-panel-0');
-    if (firstEl) {
-      firstEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    setCurrentIndex(0);
   };
 
-  return (
-    <div className="flex flex-col items-center gap-4 w-full pb-6 select-none px-3 sm:px-4">
-      {PANELS.map((panel, idx) => (
-        <div id={`connect-panel-${idx}`} key={panel.id} className="w-full flex flex-col items-center">
-          {idx > 0 && <div className="w-3/4 border-t border-dashed border-gray-200 my-3" />}
-          <RadialWheel
-            panel={panel}
-            connections={connections[panel.id] || new Set()}
-            onConnect={(item) => handleConnect(panel.id, item)}
-          />
-        </div>
-      ))}
+  const handlePrev = () => {
+    if (currentIndex > 0) setCurrentIndex(c => c - 1);
+  };
 
-      {/* Bottom Reset / Retry Button */}
-      <div className="flex justify-center pt-4 pb-4">
+  const handleNext = () => {
+    if (currentIndex < PANELS.length - 1) setCurrentIndex(c => c + 1);
+  };
+
+  const currentPanel = PANELS[currentIndex];
+
+  return (
+    <div className="flex flex-col items-center gap-4 w-full pb-12 select-none px-2 max-w-lg mx-auto">
+      {/* Title */}
+      <div className="text-center font-black text-slate-800 text-sm sm:text-base">
+        {currentIndex + 1}. {currentPanel.title}
+      </div>
+
+      {/* 1 Wheel in Center (Fits 100% on phone screen!) */}
+      <div className="w-full flex justify-center py-1">
+        <RadialWheel
+          panel={currentPanel}
+          connections={connections[currentPanel.id] || new Set()}
+          onConnect={(item) => handleConnect(currentPanel.id, item)}
+        />
+      </div>
+
+      {/* Prev / Next Horizontal Navigation Buttons */}
+      <div className="flex items-center justify-between gap-3 pt-3 px-1 w-full max-w-sm">
+        <button
+          type="button"
+          onClick={handlePrev}
+          disabled={currentIndex === 0}
+          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+            currentIndex === 0
+              ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+              : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
+          }`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>முந்தையது</span>
+        </button>
+
+        <div className="px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-black text-xs sm:text-sm">
+          {currentIndex + 1} / {PANELS.length}
+        </div>
+
+        <button
+          type="button"
+          onClick={handleNext}
+          disabled={currentIndex === PANELS.length - 1}
+          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+            currentIndex === PANELS.length - 1
+              ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+              : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
+          }`}
+        >
+          <span>அடுத்தது</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Bottom Reset Button (Resets all and goes back to Question 1) */}
+      <div className="flex justify-center pt-2 pb-4">
         <button
           type="button"
           onClick={handleReset}
