@@ -23,6 +23,7 @@ import { FillInBlanksLetterGame } from './components/FillInBlanksLetterGame';
 import { ConnectAndWriteLetterGame } from './components/ConnectAndWriteLetterGame';
 import { LearnLettersGame } from './components/LearnLettersGame';
 import { TraceLettersGame } from './components/TraceLettersGame';
+import { PeyaraiSolvomGame } from './components/PeyaraiSolvomGame';
 import { 
   Menu, 
   ArrowLeft, 
@@ -5189,43 +5190,8 @@ export default function App() {
                           </div>
                         </div>
                       ) : topicContent.id === 'peyarai' ? (
-                        /* 8. Name the Pictures: Full image 3D cards, 2 per row, black audio icon in bottom right */
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-3.5 sm:gap-5">
-                            {topicContent.items.map((item, idx) => (
-                              <button
-                                key={idx}
-                                type="button"
-                                onClick={() => {
-                                  if (item.audio) {
-                                    if (window._currentPeyaraiAudio) {
-                                      window._currentPeyaraiAudio.pause();
-                                      window._currentPeyaraiAudio.currentTime = 0;
-                                    }
-                                    const a = new Audio(item.audio);
-                                    window._currentPeyaraiAudio = a;
-                                    a.play().catch(e => console.log('Audio playback error:', e));
-                                  }
-                                }}
-                                className="relative aspect-square w-full rounded-2xl sm:rounded-3xl bg-white border-2 border-stone-300 border-b-[5px] border-b-stone-400 shadow-md hover:border-b-[6px] hover:shadow-lg active:translate-y-[2px] active:border-b-[2px] transition-all cursor-pointer overflow-hidden group outline-none focus:outline-none focus-visible:outline-none focus:ring-0 flex items-center justify-center p-0"
-                              >
-                                <img
-                                  src={item.img}
-                                  alt={item.name}
-                                  className="w-full h-full object-cover pointer-events-none group-hover:scale-105 transition-transform duration-200"
-                                />
-
-                                {/* Black audio icon in bottom-right corner */}
-                                <div
-                                  className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-black shadow-md border border-black/15 flex items-center justify-center transition-transform group-hover:scale-110 active:scale-90"
-                                  title="à®’à®²à®¿ à®•à¯‡à®Ÿà¯à®•"
-                                >
-                                  <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
+                        /* 8. Name the Pictures: Flat cards, bare popping audio icon */
+                        <PeyaraiSolvomGame items={topicContent.items} />
                       ) : topicContent.id === 'vaanga-ennodu' ? (
                         /* 9. à®µà®¾à®™à¯à®• à®Žà®©à¯à®©à¯‹à®Ÿà¯: Line Tracing Activity */
                         <LineTracingGame />
