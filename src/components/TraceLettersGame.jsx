@@ -1,21 +1,21 @@
 // src/components/TraceLettersGame.jsx
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { RotateCcw } from 'lucide-react';
 
 const LETTERS = [
-  { id: 'l1',  char: 'அ', key: 'a' },
-  { id: 'l2',  char: 'ஆ', key: 'aa' },
-  { id: 'l3',  char: 'இ', key: 'i' },
-  { id: 'l4',  char: 'ஈ', key: 'ii' },
-  { id: 'l5',  char: 'உ', key: 'u' },
-  { id: 'l6',  char: 'ஊ', key: 'uu' },
-  { id: 'l7',  char: 'எ', key: 'e' },
-  { id: 'l8',  char: 'ஏ', key: 'ee' },
-  { id: 'l9',  char: 'ஐ', key: 'ai' },
-  { id: 'l10', char: 'ஒ', key: 'o' },
-  { id: 'l11', char: 'ஓ', key: 'oo' },
-  { id: 'l12', char: 'ஔ', key: 'au', fontSize: 170 },
-  { id: 'l13', char: 'ஃ', key: 'aaydha' }
+  { id: 'l1',  char: 'அ', key: 'a',      fontSize: 320 },
+  { id: 'l2',  char: 'ஆ', key: 'aa',     fontSize: 320 },
+  { id: 'l3',  char: 'இ', key: 'i',      fontSize: 320 },
+  { id: 'l4',  char: 'ஈ', key: 'ii',     fontSize: 320 },
+  { id: 'l5',  char: 'உ', key: 'u',      fontSize: 320 },
+  { id: 'l6',  char: 'ஊ', key: 'uu',     fontSize: 320 },
+  { id: 'l7',  char: 'எ', key: 'e',      fontSize: 320 },
+  { id: 'l8',  char: 'ஏ', key: 'ee',     fontSize: 320 },
+  { id: 'l9',  char: 'ஐ', key: 'ai',     fontSize: 320 },
+  { id: 'l10', char: 'ஒ', key: 'o',      fontSize: 320 },
+  { id: 'l11', char: 'ஓ', key: 'oo',     fontSize: 320 },
+  { id: 'l12', char: 'ஔ', key: 'au',     fontSize: 220 },
+  { id: 'l13', char: 'ஃ', key: 'aaydha', fontSize: 320 }
 ];
 
 // In-memory cache for generated single dots
@@ -102,7 +102,7 @@ function zhangSuenThinning(grid, width, height) {
 }
 
 // Extracts single dots strictly along the centerline of the Tamil glyph
-function getLetterSkeletonDots(char, fontSize = 260) {
+function getLetterSkeletonDots(char, fontSize = 320) {
   if (typeof window === 'undefined') return [];
   const key = `${char}_${fontSize}`;
   if (DOTS_CACHE[key]) return DOTS_CACHE[key];
@@ -110,16 +110,16 @@ function getLetterSkeletonDots(char, fontSize = 260) {
   // Special case: Ayutha Ezhuthu ஃ (3 prominent single dots in a triangle)
   if (char === 'ஃ') {
     const ayuthaDots = [
-      { x: 200, y: 155, r: 12 },
-      { x: 160, y: 235, r: 12 },
-      { x: 240, y: 235, r: 12 }
+      { x: 200, y: 135, r: 14 },
+      { x: 150, y: 245, r: 14 },
+      { x: 250, y: 245, r: 14 }
     ];
     DOTS_CACHE[key] = ayuthaDots;
     return ayuthaDots;
   }
 
   try {
-    const size = 160;
+    const size = 180;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -131,7 +131,7 @@ function getLetterSkeletonDots(char, fontSize = 260) {
     ctx.textBaseline = 'middle';
     const scale = size / 400;
     ctx.font = `bold ${Math.round(fontSize * scale)}px "Noto Sans Tamil", "Latha", "Vijaya", sans-serif`;
-    ctx.fillText(char, size / 2, size / 2 + (char === 'ஔ' ? 0 : 8));
+    ctx.fillText(char, size / 2, size / 2 + (char === 'ஔ' ? 0 : 6));
 
     const imgData = ctx.getImageData(0, 0, size, size);
     const data = imgData.data;
@@ -146,7 +146,7 @@ function getLetterSkeletonDots(char, fontSize = 260) {
 
     // Extract nicely-spaced single dots along the skeleton
     const points = [];
-    const minSpacing = 7; // spacing in grid, corresponds to ~17.5px in 400x400 space
+    const minSpacing = 7; // spacing in grid, corresponds to ~15.5px in 400x400 space
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         if (grid[y * size + x] === 1) {
@@ -157,7 +157,7 @@ function getLetterSkeletonDots(char, fontSize = 260) {
               gridY: y,
               x: Math.round(x * (400 / size)),
               y: Math.round(y * (400 / size)),
-              r: 4.5
+              r: 5
             });
           }
         }
@@ -176,77 +176,73 @@ function getLetterSkeletonDots(char, fontSize = 260) {
 const TraceLetterCard = ({
   item,
   idx,
+  isCompleted,
   onResetRow,
   canvasRef,
   onPointerDown,
   onPointerMove,
-  onPointerUp
+  onPointerUp,
+  onDotsLoaded
 }) => {
-  const [dots, setDots] = useState(() => getLetterSkeletonDots(item.char, item.fontSize ?? 260));
+  const [dots, setDots] = useState(() => getLetterSkeletonDots(item.char, item.fontSize ?? 320));
 
   useEffect(() => {
     if (dots.length === 0) {
       if (document.fonts) {
         document.fonts.ready.then(() => {
-          setDots(getLetterSkeletonDots(item.char, item.fontSize ?? 260));
+          const res = getLetterSkeletonDots(item.char, item.fontSize ?? 320);
+          setDots(res);
+          if (onDotsLoaded) onDotsLoaded(item.id, res);
         });
       } else {
         const timer = setTimeout(() => {
-          setDots(getLetterSkeletonDots(item.char, item.fontSize ?? 260));
+          const res = getLetterSkeletonDots(item.char, item.fontSize ?? 320);
+          setDots(res);
+          if (onDotsLoaded) onDotsLoaded(item.id, res);
         }, 120);
         return () => clearTimeout(timer);
       }
+    } else {
+      if (onDotsLoaded) onDotsLoaded(item.id, dots);
     }
   }, [item.char, item.fontSize, dots.length]);
 
   return (
-    <div className="rounded-3xl bg-white border border-slate-200/90 p-4 sm:p-6 shadow-xs relative aspect-square w-full flex flex-col items-center justify-center overflow-hidden">
+    <div
+      id={`trace-card-${idx}`}
+      className="rounded-[32px] sm:rounded-[36px] bg-white border-2 border-stone-200 border-b-[5px] border-b-stone-300 shadow-sm relative aspect-square w-full flex flex-col items-center justify-center overflow-hidden transition-all"
+    >
       {/* Top-Left: Plain black number "1." */}
-      <div className="absolute top-4 left-5 text-slate-800 font-black text-lg sm:text-xl z-20 select-none">
+      <div className="absolute top-4 left-5 text-slate-900 font-black text-lg sm:text-xl z-20 select-none">
         {idx + 1}.
       </div>
 
-      {/* Top-Right: Card Retry Icon */}
-      <button
-        type="button"
-        onClick={() => onResetRow(item.id)}
-        className="absolute top-4 right-5 z-20 p-2 sm:p-2.5 rounded-full hover:bg-slate-100 text-slate-700 active:scale-90 transition-all cursor-pointer"
-        title="மீண்டும் செய்"
-      >
-        <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 stroke-[2.2]" />
-      </button>
+      {/* Top-Right: Tick Mark when complete >= 98% */}
+      {isCompleted && (
+        <div className="absolute top-4 right-5 z-20 transition-all transform scale-100 animate-in zoom-in-75 duration-200 pointer-events-none">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-500 flex items-center justify-center shadow-md border-2 border-white">
+            <svg viewBox="0 0 24 24" className="w-5 h-5 text-white stroke-[3.5] stroke-current fill-none">
+              <path d="M 5 12 L 10 17 L 19 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+        </div>
+      )}
 
       {/* 1:1 Tracing Surface */}
-      <div className="relative w-full h-full flex items-center justify-center p-2 mt-4 select-none touch-none">
-        {/* Dotted Letter Background (Single Centerline Dots + Light Outline) */}
+      <div className="relative w-full h-full flex items-center justify-center p-2 mt-2 select-none touch-none">
+        {/* Dotted Letter Background (ONLY Single Centerline Dots - No Outline Dots) */}
         <svg
           viewBox="0 0 400 400"
           className="w-full h-full max-h-full pointer-events-none select-none z-0"
         >
-          {/* Subtle light guide for the letter */}
-          <text
-            x="200"
-            y={item.fontSize ? 200 + (item.fontSize * 0.3) : 275}
-            textAnchor="middle"
-            fontSize={item.fontSize ?? 260}
-            fontWeight="bold"
-            fontFamily='"Noto Sans Tamil", "Latha", "Vijaya", sans-serif'
-            fill="#f8fafc"
-            stroke="#e2e8f0"
-            strokeWidth="1.5"
-            strokeDasharray="4 4"
-          >
-            {item.char}
-          </text>
-
-          {/* Crisp, prominent SINGLE DOTS right along the centerline */}
+          {/* Crisp, prominent SINGLE CENTERLINE DOTS */}
           {dots.map((pt, i) => (
             <circle
               key={i}
               cx={pt.x}
               cy={pt.y}
-              r={pt.r || 4.5}
-              fill="#334155"
+              r={pt.r || 5}
+              fill="#1e293b"
             />
           ))}
         </svg>
@@ -264,15 +260,32 @@ const TraceLetterCard = ({
           onPointerCancel={(e) => onPointerUp(item.id, e)}
         />
       </div>
+
+      {/* Bottom-Right: Small Card Retry Icon */}
+      <button
+        type="button"
+        onClick={() => onResetRow(item.id)}
+        className="absolute bottom-3.5 right-4 z-20 px-2 py-1 rounded-lg hover:bg-stone-100 text-stone-500 hover:text-stone-800 active:scale-90 transition-all cursor-pointer flex items-center gap-1 border border-stone-200/60 bg-stone-50/80"
+        title="மீண்டும் செய்"
+      >
+        <RotateCcw className="w-3.5 h-3.5 text-stone-600" />
+        <span className="text-[11px] font-bold text-stone-600">மீண்டும்</span>
+      </button>
     </div>
   );
 };
 
 export const TraceLettersGame = () => {
   const [strokesByLetter, setStrokesByLetter] = useState({});
+  const [completedLetters, setCompletedLetters] = useState({});
+  const dotsByLetterRef = useRef({});
   const canvasRefs = useRef({});
   const isDrawing  = useRef(false);
   const activeLetterRef = useRef(null);
+
+  const handleDotsLoaded = (letterId, dots) => {
+    dotsByLetterRef.current[letterId] = dots;
+  };
 
   // Accurate Canvas Coordinate Mapping (works for Mouse, Pen & Mobile Touch)
   const getCanvasCoords = (e, canvas) => {
@@ -290,7 +303,7 @@ export const TraceLettersGame = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth   = 16;
+    ctx.lineWidth   = 18;
     ctx.lineCap     = 'round';
     ctx.lineJoin    = 'round';
     ctx.globalCompositeOperation = 'source-over';
@@ -351,11 +364,51 @@ export const TraceLettersGame = () => {
     }
     isDrawing.current = false;
     activeLetterRef.current = null;
+
+    // Check completion when user lifts finger/mouse
+    const dots = dotsByLetterRef.current[letterId] || [];
+    const strokes = strokesByLetter[letterId] || [];
+    const flatPoints = strokes.flat();
+
+    if (dots.length > 0 && flatPoints.length > 0 && !completedLetters[letterId]) {
+      const tolSq = 26 * 26; // Tolerance radius in 400x400 space
+      let coveredCount = 0;
+
+      for (let i = 0; i < dots.length; i++) {
+        const d = dots[i];
+        const isHit = flatPoints.some(pt => {
+          // Canvas is 600x600, SVG space is 400x400
+          const sx = pt.x * (400 / 600);
+          const sy = pt.y * (400 / 600);
+          const dx = d.x - sx;
+          const dy = d.y - sy;
+          return dx * dx + dy * dy <= tolSq;
+        });
+        if (isHit) coveredCount++;
+      }
+
+      const coverageRatio = coveredCount / dots.length;
+      if (coverageRatio >= 0.95) { // 95% - 98% dot coverage threshold
+        setCompletedLetters(prev => ({ ...prev, [letterId]: true }));
+
+        // Automatically advance / smooth scroll to the next card
+        const currentIdx = LETTERS.findIndex(l => l.id === letterId);
+        if (currentIdx !== -1 && currentIdx < LETTERS.length - 1) {
+          setTimeout(() => {
+            const nextElem = document.getElementById(`trace-card-${currentIdx + 1}`);
+            if (nextElem) {
+              nextElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 500);
+        }
+      }
+    }
   };
 
   // Single card reset handler
   const handleResetRow = (letterId) => {
     setStrokesByLetter(prev => ({ ...prev, [letterId]: [] }));
+    setCompletedLetters(prev => ({ ...prev, [letterId]: false }));
     const canvas = canvasRefs.current[letterId];
     if (canvas) {
       const ctx = canvas.getContext('2d');
@@ -363,9 +416,10 @@ export const TraceLettersGame = () => {
     }
   };
 
-  // Reset all cards
+  // Reset all cards and redirect to first question
   const handleResetAll = () => {
     setStrokesByLetter({});
+    setCompletedLetters({});
     Object.keys(canvasRefs.current).forEach(id => {
       const canvas = canvasRefs.current[id];
       if (canvas) {
@@ -373,6 +427,14 @@ export const TraceLettersGame = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     });
+
+    // Redirect / smooth scroll to first question
+    setTimeout(() => {
+      const firstCard = document.getElementById('trace-card-0');
+      if (firstCard) {
+        firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   };
 
   return (
@@ -384,16 +446,18 @@ export const TraceLettersGame = () => {
             key={item.id}
             item={item}
             idx={idx}
+            isCompleted={!!completedLetters[item.id]}
             onResetRow={handleResetRow}
             canvasRef={el => (canvasRefs.current[item.id] = el)}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
+            onDotsLoaded={handleDotsLoaded}
           />
         ))}
       </div>
 
-      {/* ── Bottom Reset / Retry Button (Resets All) ── */}
+      {/* ── Bottom Reset / Retry Button (Resets All & Redirects to Question 1) ── */}
       <div className="flex justify-center pt-3 pb-4">
         <button
           type="button"
