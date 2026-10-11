@@ -1,6 +1,6 @@
 // src/components/DrawMissingPartsGame.jsx
 import React, { useState, useRef } from 'react';
-import { RotateCcw, Eraser } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
 export const DrawMissingPartsGame = () => {
   // Strokes stored by rowId and itemIndex: { "row1_0": [ [[x1,y1],[x2,y2]], ... ], ... }
@@ -8,16 +8,20 @@ export const DrawMissingPartsGame = () => {
   const isDrawingRef = useRef(false);
   const activeKeyRef = useRef(null);
 
+  const getSvgCoords = (e, svg) => {
+    const rect = svg.getBoundingClientRect();
+    const x = Math.round(14 + ((e.clientX - rect.left) / rect.width) * 92);
+    const y = Math.round(12 + ((e.clientY - rect.top) / rect.height) * 104);
+    return [x, y];
+  };
+
   const handlePointerDown = (key, e) => {
     e.preventDefault();
-    const svg = e.currentTarget;
-    const rect = svg.getBoundingClientRect();
-    const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
 
-    const x = Math.round(14 + ((clientX - rect.left) / rect.width) * 92);
-    const y = Math.round(12 + ((clientY - rect.top) / rect.height) * 104);
-
+    const [x, y] = getSvgCoords(e, e.currentTarget);
     isDrawingRef.current = true;
     activeKeyRef.current = key;
 
@@ -33,13 +37,8 @@ export const DrawMissingPartsGame = () => {
   const handlePointerMove = (key, e) => {
     if (!isDrawingRef.current || activeKeyRef.current !== key) return;
     e.preventDefault();
-    const svg = e.currentTarget;
-    const rect = svg.getBoundingClientRect();
-    const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-    const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
 
-    const x = Math.round(14 + ((clientX - rect.left) / rect.width) * 92);
-    const y = Math.round(12 + ((clientY - rect.top) / rect.height) * 104);
+    const [x, y] = getSvgCoords(e, e.currentTarget);
 
     setStrokesMap(prev => {
       const existing = prev[key] || [];
@@ -53,32 +52,30 @@ export const DrawMissingPartsGame = () => {
     });
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e) => {
+    if (e && e.currentTarget && e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+    }
     isDrawingRef.current = false;
     activeKeyRef.current = null;
   };
 
-  const clearStrokesRow = (rowId) => {
-    setStrokesMap(prev => {
-      const updated = { ...prev };
-      delete updated[`${rowId}_0`];
-      delete updated[`${rowId}_1`];
-      delete updated[`${rowId}_2`];
-      return updated;
-    });
-  };
-
   const handleResetAll = () => {
     setStrokesMap({});
+    const firstEl = document.getElementById('missing-parts-row-0');
+    if (firstEl) {
+      firstEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
-  // Rows definition
+  // Rows definition: 3 questions, each with target + 2 enlarged practice drawings
   const rows = [
     {
       id: 'row1',
       title: '1. முகத்தில் விடுபட்ட உறுப்புகளை வரைக',
       type: 'stick',
-      // Base SVG rendering functions
       renderTarget: () => (
         <g stroke="#000" fill="none">
           {/* Oval face */}
@@ -111,14 +108,6 @@ export const DrawMissingPartsGame = () => {
               <ellipse cx="60" cy="65" rx="36" ry="46" strokeWidth="3" fill="#fff" />
               <circle cx="46" cy="48" r="4.5" fill="#000" stroke="none" />
               <circle cx="74" cy="48" r="4.5" fill="#000" stroke="none" />
-            </g>
-          )
-        },
-        {
-          // Step 3: Has face outline only (missing all)
-          renderBase: () => (
-            <g stroke="#000" fill="none">
-              <ellipse cx="60" cy="65" rx="36" ry="46" strokeWidth="3" fill="#fff" />
             </g>
           )
         }
@@ -173,14 +162,6 @@ export const DrawMissingPartsGame = () => {
               <circle cx="48" cy="50" r="3.5" fill="#000" stroke="none" />
               <path d="M 66 46 Q 72 40 78 46" strokeWidth="2.5" />
               <circle cx="72" cy="50" r="3.5" fill="#000" stroke="none" />
-            </g>
-          )
-        },
-        {
-          // Step 3: Plain head circle only (no ears)
-          renderBase: () => (
-            <g stroke="#000" fill="none">
-              <ellipse cx="60" cy="65" rx="34" ry="38" strokeWidth="3" fill="#fff" />
             </g>
           )
         }
@@ -247,39 +228,32 @@ export const DrawMissingPartsGame = () => {
               <circle cx="56" cy="15" r="2.5" fill="#000" stroke="none" />
             </g>
           )
-        },
-        {
-          // Step 3: Plain head circle only (no ears)
-          renderBase: () => (
-            <g stroke="#000" fill="none">
-              <ellipse cx="60" cy="72" rx="30" ry="34" strokeWidth="3" fill="#fff" />
-            </g>
-          )
         }
       ]
     }
   ];
 
   return (
-    <div className="space-y-5 pb-12 select-none w-full max-w-xl mx-auto">
-      {rows.map((row) => (
+    <div className="space-y-5 pb-12 select-none w-full max-w-xl mx-auto px-1 sm:px-3">
+      {rows.map((row, rIdx) => (
         <div
+          id={`missing-parts-row-${rIdx}`}
           key={row.id}
-          className="rounded-[24px] bg-white border border-amber-900/15 border-b-[5px] border-b-amber-900/25 p-4 sm:p-5 space-y-3 shadow-sm relative"
+          className="rounded-[24px] sm:rounded-[28px] bg-white border border-slate-200/90 p-4 sm:p-6 space-y-4 shadow-xs relative"
         >
-          {/* Question Illustration (ABOVE - NORMAL PINK BOX) */}
+          {/* Question Illustration (ABOVE - Light Pink Pill Container) */}
           <div className="w-full flex justify-center py-1">
-            <div className="flex items-center justify-center bg-pink-100/60 border border-pink-300 rounded-2xl p-2 px-6 shadow-2xs">
-              <svg viewBox="12 10 96 110" className="w-24 h-24 sm:w-28 sm:h-28 pointer-events-none">
+            <div className="flex items-center justify-center bg-pink-50 border border-pink-200/80 rounded-2xl p-2.5 px-6 shadow-2xs">
+              <svg viewBox="12 10 96 110" className="w-28 h-28 sm:w-32 sm:h-32 pointer-events-none">
                 {row.renderTarget()}
               </svg>
             </div>
           </div>
 
-          <div className="border-b border-stone-200/80 my-1.5" />
+          <div className="border-b border-stone-200/70 my-1" />
 
-          {/* Three Items (BELOW - NO GREEN BOXES, BIGGER FACES) */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+          {/* 2 Enlarged Drawings (BELOW - BIGGER FACES, NO 3RD DRAWING) */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-8 max-w-md mx-auto">
             {row.items.map((item, itemIdx) => {
               const key = `${row.id}_${itemIdx}`;
               const strokes = strokesMap[key] || [];
@@ -287,18 +261,16 @@ export const DrawMissingPartsGame = () => {
               return (
                 <div
                   key={itemIdx}
-                  className="flex items-center justify-center relative touch-none select-none p-0 cursor-crosshair"
+                  className="flex items-center justify-center relative touch-none select-none p-1 sm:p-2 cursor-crosshair"
                 >
                   <svg
                     viewBox="14 12 92 104"
-                    className="w-full aspect-[92/104] cursor-crosshair touch-none"
-                    onMouseDown={(e) => handlePointerDown(key, e)}
-                    onMouseMove={(e) => handlePointerMove(key, e)}
-                    onMouseUp={handlePointerUp}
-                    onMouseLeave={handlePointerUp}
-                    onTouchStart={(e) => handlePointerDown(key, e)}
-                    onTouchMove={(e) => handlePointerMove(key, e)}
-                    onTouchEnd={handlePointerUp}
+                    className="w-36 h-40 sm:w-44 sm:h-48 max-w-full cursor-crosshair touch-none select-none drop-shadow-2xs"
+                    onPointerDown={(e) => handlePointerDown(key, e)}
+                    onPointerMove={(e) => handlePointerMove(key, e)}
+                    onPointerUp={handlePointerUp}
+                    onPointerCancel={handlePointerUp}
+                    style={{ touchAction: 'none' }}
                   >
                     {/* Base incomplete face SVG */}
                     {item.renderBase()}
@@ -326,7 +298,7 @@ export const DrawMissingPartsGame = () => {
         </div>
       ))}
 
-      {/* Bottom Reset All Button */}
+      {/* Bottom Reset All Button: Resets strokes and smoothly scrolls back to first question */}
       <div className="flex justify-center pt-2 pb-4">
         <button
           type="button"
@@ -340,3 +312,5 @@ export const DrawMissingPartsGame = () => {
     </div>
   );
 };
+
+export default DrawMissingPartsGame;
