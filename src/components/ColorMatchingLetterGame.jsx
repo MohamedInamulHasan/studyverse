@@ -1,6 +1,6 @@
 // src/components/ColorMatchingLetterGame.jsx
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { RotateCcw, Eraser, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Eraser, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const BASE = 'https://res.cloudinary.com/qhsftimd/image/upload/f_auto,q_auto/studyverse/images/tamil_class1/topic11/';
 
@@ -277,9 +277,6 @@ export const ColorMatchingLetterGame = () => {
 
       {/* ── 1 Question Card at a time (Fits screen completely, no vertical scroll issues!) ── */}
       <div className="pt-2 pr-5 sm:pr-7">
-        <div className="text-center font-black text-slate-800 text-sm sm:text-base pb-2">
-          {currentIndex + 1}. {currentCard.title}
-        </div>
         <CanvasCard
           key={`${currentCard.id}_${resetTrigger}`}
           card={currentCard}
@@ -295,7 +292,7 @@ export const ColorMatchingLetterGame = () => {
           type="button"
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+          className={`flex items-center gap-1 px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
             currentIndex === 0
               ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
@@ -305,15 +302,11 @@ export const ColorMatchingLetterGame = () => {
           <span>முந்தையது</span>
         </button>
 
-        <div className="px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-black text-xs sm:text-sm">
-          {currentIndex + 1} / {cards.length}
-        </div>
-
         <button
           type="button"
           onClick={handleNext}
           disabled={currentIndex === cards.length - 1}
-          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+          className={`flex items-center gap-1 px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
             currentIndex === cards.length - 1
               ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
@@ -321,18 +314,6 @@ export const ColorMatchingLetterGame = () => {
         >
           <span>அடுத்தது</span>
           <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* ── Bottom Reset Button (Resets all and goes back to Question 1) ── */}
-      <div className="flex justify-center pt-2 pb-4">
-        <button
-          type="button"
-          onClick={handleReset}
-          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#16a34a] hover:bg-green-700 text-white border border-green-700 border-b-[3.5px] border-b-green-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
-        >
-          <RotateCcw className="w-4 h-4" />
-          <span>மீண்டும் செய்</span>
         </button>
       </div>
     </div>

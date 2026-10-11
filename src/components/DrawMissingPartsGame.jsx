@@ -1,6 +1,5 @@
-// src/components/DrawMissingPartsGame.jsx
 import React, { useState, useRef } from 'react';
-import { RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const DrawMissingPartsGame = () => {
   // Strokes stored by rowId and itemIndex: { "row1_0": [ [[x1,y1],[x2,y2]], ... ], ... }
@@ -225,13 +224,8 @@ export const DrawMissingPartsGame = () => {
       {/* Active Question Card (1 Question at a time - Fits mobile screen fully!) */}
       <div
         key={currentRow.id}
-        className="rounded-[24px] bg-white border border-slate-200/90 p-4 sm:p-6 space-y-4 shadow-xs relative transition-all duration-300"
+        className="rounded-[28px] bg-white border border-slate-200 border-b-[4px] border-b-slate-300 p-4 sm:p-6 space-y-4 shadow-sm relative transition-all duration-300"
       >
-        {/* Question Header & Title */}
-        <div className="text-center font-black text-slate-800 text-sm sm:text-base">
-          {currentIndex + 1}. {currentRow.title}
-        </div>
-
         {/* Target Complete Face */}
         <div className="w-full flex justify-center py-1">
           <div className="flex items-center justify-center bg-pink-50 border border-pink-200/80 rounded-2xl p-2 px-6 shadow-2xs">
@@ -294,7 +288,7 @@ export const DrawMissingPartsGame = () => {
           type="button"
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+          className={`flex items-center gap-1 px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
             currentIndex === 0
               ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
@@ -304,16 +298,11 @@ export const DrawMissingPartsGame = () => {
           <span>முந்தையது</span>
         </button>
 
-        {/* Counter Indicator */}
-        <div className="px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-black text-xs sm:text-sm">
-          {currentIndex + 1} / {rows.length}
-        </div>
-
         <button
           type="button"
           onClick={handleNext}
           disabled={currentIndex === rows.length - 1}
-          className={`flex items-center gap-1 px-4 sm:px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
+          className={`flex items-center gap-1 px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all border shadow-xs ${
             currentIndex === rows.length - 1
               ? 'opacity-40 bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300 border-b-[3px] border-b-slate-400 active:translate-y-[2px] active:border-b cursor-pointer'
@@ -321,18 +310,6 @@ export const DrawMissingPartsGame = () => {
         >
           <span>அடுத்தது</span>
           <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* Bottom Retry Button (Resets all and redirects to Question 1) */}
-      <div className="flex justify-center pt-3 pb-4">
-        <button
-          type="button"
-          onClick={handleResetAll}
-          className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-[#16a34a] hover:bg-green-700 text-white border border-green-700 border-b-[3.5px] border-b-green-900 shadow-xs active:translate-y-[2px] active:border-b-[1.5px] transition-all cursor-pointer"
-        >
-          <RotateCcw className="w-4 h-4" />
-          <span>மீண்டும் செய்</span>
         </button>
       </div>
     </div>
