@@ -117,7 +117,14 @@ export default function App() {
   const [selectedTerm, setSelectedTerm] = useState('Term I');
   const [language, setLanguage] = useState('eng'); // 'eng' | 'tam'
   const [isAdminMode, setIsAdminMode] = useState(false);
-  const [customBooksOverrides, setCustomBooksOverrides] = useState({});
+  const [customBooksOverrides, setCustomBooksOverrides] = useState(() => {
+    try {
+      const saved = localStorage.getItem('custom_books_overrides');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [customChaptersOverrides, setCustomChaptersOverrides] = useState(() => {
     try {
       const saved = localStorage.getItem('custom_chapters_overrides');
@@ -140,6 +147,14 @@ export default function App() {
   // Persist to localStorage
   useEffect(() => {
     try {
+      localStorage.setItem('custom_books_overrides', JSON.stringify(customBooksOverrides));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [customBooksOverrides]);
+
+  useEffect(() => {
+    try {
       localStorage.setItem('custom_chapters_overrides', JSON.stringify(customChaptersOverrides));
     } catch (e) {
       console.error(e);
@@ -158,6 +173,15 @@ export default function App() {
   useEffect(() => {
     const fetchCloudData = async () => {
       try {
+        const { data: bookRows, error: bookErr } = await supabase.from('custom_books').select('*');
+        if (!bookErr && bookRows && bookRows.length > 0) {
+          const cloudBooks = {};
+          bookRows.forEach(r => {
+            if (r.class_num && r.books) cloudBooks[r.class_num] = r.books;
+          });
+          setCustomBooksOverrides(prev => ({ ...prev, ...cloudBooks }));
+        }
+
         const { data: chapRows, error: chapErr } = await supabase.from('custom_chapters').select('*');
         if (!chapErr && chapRows && chapRows.length > 0) {
           const cloudChaps = {};
@@ -801,6 +825,13 @@ export default function App() {
     }
 
     setCustomBooksOverrides(prev => ({ ...prev, [currentClassNum]: list }));
+    supabase.from('custom_books').upsert({
+      class_num: currentClassNum,
+      books: list,
+      updated_at: new Date().toISOString()
+    }).then(({ error }) => {
+      if (error) console.error('Supabase custom_books save error:', error);
+    });
     setBookModal(null);
     setTimeout(() => setSaveToastMessage(''), 2500);
   };
@@ -896,6 +927,13 @@ export default function App() {
     if (window.confirm(`Are you sure you want to delete "${bookModal.subject || 'this book'}"?`)) {
       const list = (customBooksOverrides[currentClassNum] || defaultTextbooks).filter(b => b.id !== bookModal.id);
       setCustomBooksOverrides(prev => ({ ...prev, [currentClassNum]: list }));
+      supabase.from('custom_books').upsert({
+        class_num: currentClassNum,
+        books: list,
+        updated_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.error('Supabase custom_books delete error:', error);
+      });
       setBookModal(null);
       setSaveToastMessage(`Deleted "${bookModal.subject}" successfully!`);
       setTimeout(() => setSaveToastMessage(''), 2500);
