@@ -3,25 +3,25 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { RotateCcw } from 'lucide-react';
 
 const LETTERS = [
-  { id: 'l1',  char: 'அ', key: 'a',      fontSize: 320 },
-  { id: 'l2',  char: 'ஆ', key: 'aa',     fontSize: 320 },
-  { id: 'l3',  char: 'இ', key: 'i',      fontSize: 320 },
-  { id: 'l4',  char: 'ஈ', key: 'ii',     fontSize: 320 },
-  { id: 'l5',  char: 'உ', key: 'u',      fontSize: 320 },
-  { id: 'l6',  char: 'ஊ', key: 'uu',     fontSize: 320 },
-  { id: 'l7',  char: 'எ', key: 'e',      fontSize: 320 },
-  { id: 'l8',  char: 'ஏ', key: 'ee',     fontSize: 320 },
-  { id: 'l9',  char: 'ஐ', key: 'ai',     fontSize: 320 },
-  { id: 'l10', char: 'ஒ', key: 'o',      fontSize: 320 },
-  { id: 'l11', char: 'ஓ', key: 'oo',     fontSize: 320 },
-  { id: 'l12', char: 'ஔ', key: 'au',     fontSize: 220 },
-  { id: 'l13', char: 'ஃ', key: 'aaydha', fontSize: 320 }
+  { id: 'l1',  char: 'அ', key: 'a',      fontSize: 300 },
+  { id: 'l2',  char: 'ஆ', key: 'aa',     fontSize: 280 }, // Adjusted to fit bottom loop
+  { id: 'l3',  char: 'இ', key: 'i',      fontSize: 290 },
+  { id: 'l4',  char: 'ஈ', key: 'ii',     fontSize: 280 }, // Has 2 inner dots
+  { id: 'l5',  char: 'உ', key: 'u',      fontSize: 290 },
+  { id: 'l6',  char: 'ஊ', key: 'uu',     fontSize: 270 }, // Wide glyph fitted
+  { id: 'l7',  char: 'எ', key: 'e',      fontSize: 290 },
+  { id: 'l8',  char: 'ஏ', key: 'ee',     fontSize: 290 },
+  { id: 'l9',  char: 'ஐ', key: 'ai',     fontSize: 280 },
+  { id: 'l10', char: 'ஒ', key: 'o',      fontSize: 290 },
+  { id: 'l11', char: 'ஓ', key: 'oo',     fontSize: 280 },
+  { id: 'l12', char: 'ஔ', key: 'au',     fontSize: 210 }, // Composite glyph fitted
+  { id: 'l13', char: 'ஃ', key: 'aaydha', fontSize: 300 }
 ];
 
 // In-memory cache for generated single dots
 const DOTS_CACHE = {};
 
-// Zhang-Suen Thinning Algorithm: reduces thick font stroke to a 1-pixel centerline skeleton
+// Zhang-Suen Thinning Algorithm
 function zhangSuenThinning(grid, width, height) {
   let changed = true;
   const p = (x, y) => (x >= 0 && x < width && y >= 0 && y < height) ? grid[y * width + x] : 0;
@@ -101,25 +101,25 @@ function zhangSuenThinning(grid, width, height) {
   }
 }
 
-// Extracts single dots strictly along the centerline of the Tamil glyph
-function getLetterSkeletonDots(char, fontSize = 320) {
+// Extracts single dots strictly along the centerline of the Tamil glyph, perfectly centered & fitted
+function getLetterSkeletonDots(char, fontSize = 290) {
   if (typeof window === 'undefined') return [];
   const key = `${char}_${fontSize}`;
   if (DOTS_CACHE[key]) return DOTS_CACHE[key];
 
-  // Special case: Ayutha Ezhuthu ஃ (3 prominent single dots in a triangle)
+  // Special case 1: Ayutha Ezhuthu ஃ (3 circle dots)
   if (char === 'ஃ') {
     const ayuthaDots = [
-      { x: 200, y: 135, r: 14 },
-      { x: 150, y: 245, r: 14 },
-      { x: 250, y: 245, r: 14 }
+      { x: 200, y: 145, r: 15 },
+      { x: 140, y: 255, r: 15 },
+      { x: 260, y: 255, r: 15 }
     ];
     DOTS_CACHE[key] = ayuthaDots;
     return ayuthaDots;
   }
 
   try {
-    const size = 180;
+    const size = 200;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -131,13 +131,13 @@ function getLetterSkeletonDots(char, fontSize = 320) {
     ctx.textBaseline = 'middle';
     const scale = size / 400;
     ctx.font = `bold ${Math.round(fontSize * scale)}px "Noto Sans Tamil", "Latha", "Vijaya", sans-serif`;
-    ctx.fillText(char, size / 2, size / 2 + (char === 'ஔ' ? 0 : 6));
+    ctx.fillText(char, size / 2, size / 2);
 
     const imgData = ctx.getImageData(0, 0, size, size);
     const data = imgData.data;
     const grid = new Uint8Array(size * size);
     for (let i = 0; i < grid.length; i++) {
-      if (data[i * 4 + 3] > 80) {
+      if (data[i * 4 + 3] > 70) {
         grid[i] = 1;
       }
     }
@@ -145,14 +145,14 @@ function getLetterSkeletonDots(char, fontSize = 320) {
     zhangSuenThinning(grid, size, size);
 
     // Extract nicely-spaced single dots along the skeleton
-    const points = [];
-    const minSpacing = 7; // spacing in grid, corresponds to ~15.5px in 400x400 space
+    const rawPoints = [];
+    const minSpacing = 7; // spacing in grid (~14px in 400 space)
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         if (grid[y * size + x] === 1) {
-          const tooClose = points.some(p => Math.hypot(p.gridX - x, p.gridY - y) < minSpacing);
+          const tooClose = rawPoints.some(p => Math.hypot(p.gridX - x, p.gridY - y) < minSpacing);
           if (!tooClose) {
-            points.push({
+            rawPoints.push({
               gridX: x,
               gridY: y,
               x: Math.round(x * (400 / size)),
@@ -164,8 +164,53 @@ function getLetterSkeletonDots(char, fontSize = 320) {
       }
     }
 
-    DOTS_CACHE[key] = points;
-    return points;
+    if (rawPoints.length === 0) return [];
+
+    // Calculate Bounding Box of extracted points
+    let minX = Infinity, maxX = -Infinity;
+    let minY = Infinity, maxY = -Infinity;
+    for (const p of rawPoints) {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+
+    const bboxW = maxX - minX || 1;
+    const bboxH = maxY - minY || 1;
+    const bboxCx = (minX + maxX) / 2;
+    const bboxCy = (minY + maxY) / 2;
+
+    // Scale so EVERY letter fits comfortably within 280x280 (Cards 2, 6, 12 fit perfectly!)
+    const targetMaxW = 280;
+    const targetMaxH = 280;
+    let fitScale = 1;
+    if (bboxW > targetMaxW || bboxH > targetMaxH) {
+      fitScale = Math.min(targetMaxW / bboxW, targetMaxH / bboxH);
+    }
+
+    // Exact centering at (200, 200)
+    let centered = rawPoints.map(p => ({
+      ...p,
+      x: Math.round(200 + (p.x - bboxCx) * fitScale),
+      y: Math.round(200 + (p.y - bboxCy) * fitScale)
+    }));
+
+    // Special case 2: Letter 4 'ஈ' (must have the 2 inner dots)
+    if (char === 'ஈ') {
+      const leftInnerDot = { x: Math.round(200 - 45 * fitScale), y: Math.round(200 + 10 * fitScale), r: 6.5 };
+      const rightInnerDot = { x: Math.round(200 + 50 * fitScale), y: Math.round(200 + 10 * fitScale), r: 6.5 };
+
+      // Ensure no skeleton dots collided directly on top of inner dots
+      centered = centered.filter(p => 
+        Math.hypot(p.x - leftInnerDot.x, p.y - leftInnerDot.y) > 12 &&
+        Math.hypot(p.x - rightInnerDot.x, p.y - rightInnerDot.y) > 12
+      );
+      centered.push(leftInnerDot, rightInnerDot);
+    }
+
+    DOTS_CACHE[key] = centered;
+    return centered;
   } catch (e) {
     console.error('Error generating letter dots:', e);
     return [];
@@ -184,19 +229,19 @@ const TraceLetterCard = ({
   onPointerUp,
   onDotsLoaded
 }) => {
-  const [dots, setDots] = useState(() => getLetterSkeletonDots(item.char, item.fontSize ?? 320));
+  const [dots, setDots] = useState(() => getLetterSkeletonDots(item.char, item.fontSize ?? 290));
 
   useEffect(() => {
     if (dots.length === 0) {
       if (document.fonts) {
         document.fonts.ready.then(() => {
-          const res = getLetterSkeletonDots(item.char, item.fontSize ?? 320);
+          const res = getLetterSkeletonDots(item.char, item.fontSize ?? 290);
           setDots(res);
           if (onDotsLoaded) onDotsLoaded(item.id, res);
         });
       } else {
         const timer = setTimeout(() => {
-          const res = getLetterSkeletonDots(item.char, item.fontSize ?? 320);
+          const res = getLetterSkeletonDots(item.char, item.fontSize ?? 290);
           setDots(res);
           if (onDotsLoaded) onDotsLoaded(item.id, res);
         }, 120);
@@ -217,25 +262,38 @@ const TraceLetterCard = ({
         {idx + 1}.
       </div>
 
-      {/* Top-Right: Tick Mark when complete >= 98% */}
+      {/* Top-Right: Chunky green tick matching Topic 5 tick */}
       {isCompleted && (
-        <div className="absolute top-4 right-5 z-20 transition-all transform scale-100 animate-in zoom-in-75 duration-200 pointer-events-none">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-500 flex items-center justify-center shadow-md border-2 border-white">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-white stroke-[3.5] stroke-current fill-none">
-              <path d="M 5 12 L 10 17 L 19 7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
+        <div className="absolute top-3.5 right-4 z-20 transition-all transform scale-100 animate-in zoom-in-75 duration-200 pointer-events-none">
+          <svg viewBox="0 0 100 100" className="w-8 h-8 sm:w-10 sm:h-10 drop-shadow-md">
+            <path
+              d="M 22 52 L 42 74 L 80 24"
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth="24"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M 22 52 L 42 74 L 80 24"
+              fill="none"
+              stroke="#16a34a"
+              strokeWidth="17"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
       )}
 
       {/* 1:1 Tracing Surface */}
-      <div className="relative w-full h-full flex items-center justify-center p-2 mt-2 select-none touch-none">
+      <div className="relative w-full h-full flex items-center justify-center p-2 select-none touch-none">
         {/* Dotted Letter Background (ONLY Single Centerline Dots - No Outline Dots) */}
         <svg
           viewBox="0 0 400 400"
           className="w-full h-full max-h-full pointer-events-none select-none z-0"
         >
-          {/* Crisp, prominent SINGLE CENTERLINE DOTS */}
+          {/* Crisp, prominent SINGLE CENTERLINE DOTS (or 3 circle dots for ஃ) */}
           {dots.map((pt, i) => (
             <circle
               key={i}
@@ -261,15 +319,14 @@ const TraceLetterCard = ({
         />
       </div>
 
-      {/* Bottom-Right: Small Card Retry Icon */}
+      {/* Bottom-Right: Small Circular Retry Icon (No Text) */}
       <button
         type="button"
         onClick={() => onResetRow(item.id)}
-        className="absolute bottom-3.5 right-4 z-20 px-2 py-1 rounded-lg hover:bg-stone-100 text-stone-500 hover:text-stone-800 active:scale-90 transition-all cursor-pointer flex items-center gap-1 border border-stone-200/60 bg-stone-50/80"
+        className="absolute bottom-3.5 right-4 z-20 p-2 rounded-full hover:bg-stone-100 text-stone-500 hover:text-stone-800 active:scale-90 transition-all cursor-pointer border border-stone-200/70 bg-stone-50 shadow-xs"
         title="மீண்டும் செய்"
       >
-        <RotateCcw className="w-3.5 h-3.5 text-stone-600" />
-        <span className="text-[11px] font-bold text-stone-600">மீண்டும்</span>
+        <RotateCcw className="w-4 h-4 text-stone-600" />
       </button>
     </div>
   );
@@ -371,13 +428,12 @@ export const TraceLettersGame = () => {
     const flatPoints = strokes.flat();
 
     if (dots.length > 0 && flatPoints.length > 0 && !completedLetters[letterId]) {
-      const tolSq = 26 * 26; // Tolerance radius in 400x400 space
+      const tolSq = 28 * 28; // Tolerance radius in 400x400 space
       let coveredCount = 0;
 
       for (let i = 0; i < dots.length; i++) {
         const d = dots[i];
         const isHit = flatPoints.some(pt => {
-          // Canvas is 600x600, SVG space is 400x400
           const sx = pt.x * (400 / 600);
           const sy = pt.y * (400 / 600);
           const dx = d.x - sx;
